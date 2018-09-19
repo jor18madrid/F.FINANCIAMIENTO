@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true"  Factory="Autofac.Integration.Wcf.AutofacServiceHostFactory, Autofac.Integration.Wcf" Service="F.FINANCIAMIENTO.WCF.SVC.SAS_GRUPO_FILTRO_Service, F.FINANCIAMIENTO.WCF " CodeBehind="SAS_GRUPO_FILTRO_Service.svc.cs" %>
