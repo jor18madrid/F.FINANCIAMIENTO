@@ -1,4 +1,5 @@
-﻿using System;
+﻿using F.FINANCIAMIENTO.WEB.App_Start;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -13,6 +14,7 @@ namespace F.FINANCIAMIENTO.WEB
         {
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+            AutoFacConfig.RegisterConfig();
         }
     }
 }
