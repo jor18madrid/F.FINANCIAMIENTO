@@ -1,7 +1,31 @@
-﻿
+﻿@model F.FINANCIAMIENTO.DTO.SAS_GRUPO_FILTRO_DTO
+
+
 @{
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<div class="panel-heading">
+    <h2>@ViewBag.Title</h2>
+</div>
+<div class="panel panel-default">
+
+    @using (Html.BeginForm("Home", "Home", FormMethod.Get, new { id = "form1" }))
+    {
+        <div class="form-horizontal panel-body">
+            <br />
+            <div class="row">
+
+                <div class="form-group col-lg-12">
+                    <div class="col-sm-3">
+                        @Html.DropDownListFor(x => x.ID_GRUPO, (IEnumerable<SelectListItem>)ViewBag.Grupos, new { id = "ddOrigen", @class = "form-control" })
+                    </div>
+                    <div class="col-sm-3">
+                        @Html.CheckBox("VIGENTE", true)
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
 
