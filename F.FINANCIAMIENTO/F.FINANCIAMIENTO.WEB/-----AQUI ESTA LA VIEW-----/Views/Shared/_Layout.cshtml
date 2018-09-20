@@ -3,10 +3,13 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
-    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+    <title>@ViewBag.Title</title>
+    @*<link href="~/Content/Site.css" rel="stylesheet" type="text/css" />*@
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <script src="~/Scripts/modernizr-2.6.2.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.css" />
+    @*<link href="~/Content/lobibox/dist/css/lobibox.css" rel="stylesheet" />*@
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -28,7 +31,7 @@
 
     <div class="container body-content">
         @RenderBody()
-        <hr />
+        <hr/>
         <footer>
             <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
         </footer>
@@ -38,5 +41,7 @@
     <script src="~/Scripts/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    @*<script src="~/Content/lobibox/js/lobibox.js"></script>*@
+ 
 </body>
 </html>
