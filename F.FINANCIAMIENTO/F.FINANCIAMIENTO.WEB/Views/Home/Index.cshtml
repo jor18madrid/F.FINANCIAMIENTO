@@ -181,10 +181,13 @@
                 editButtonRestriccion.className = "btn btn-info";
                 editButtonRestriccion.style = "width:100%";
                 //-----------------------------------------------------
+                var createCheckboxCell = document.createElement("td");
+                var createCheckbox = document.createElement('input');
+                createCheckbox.type = 'checkbox';
+                createCheckbox.checked = 'checked';
+                //createCheckbox.id = '';
 
-
-
-
+                //-----------------------------------------------------
                 var nameIdGrupo = "Perfiles_Grupos[" + x + "].ID_GRUPO";
                 var IdGrupo = "Perfiles_Grupos_" + x + "__ID_GRUPO";
 
@@ -221,7 +224,6 @@
                 inputNPerfil.value = tblData[x].Desc_Perf;
                 inputNPerfil.type = "Hidden";
 
-                //var _Sis = tblData[x].Sistema;
                 var _Perf = tblData[x].Perfil;
                 var _Grup = tblData[x].Grupo;
 
@@ -248,20 +250,21 @@
                 row.appendChild(inputGrupo);
                 row.appendChild(DescGrupoCell);
                 row.appendChild(inputNGrupo);
-                row.appendChild(deleteButtonRestriccion);
+                row.appendChild(deleteButtonRestriccion);       
                 //-----------------------------------------
-
 
                 table2.appendChild(row);
             }
             return table2;
         }
 
-        function callDelete( Perfil, Grupo) {
+        function callDelete(Perfil, Grupo)
+        {
             return function () { deleteButtonClick(Perfil, Grupo); };
         }
         //----------------------------------------------------------------
-        function callEdit( Perfil, Grupo) {
+        function callEdit(Perfil, Grupo)
+        {
             return function () { editButtonClick(Perfil, Grupo); };
         }
         //----------------------------------------------------------------
