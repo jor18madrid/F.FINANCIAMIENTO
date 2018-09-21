@@ -4,9 +4,10 @@
 @{
     ViewBag.Title = "Index";
 }
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 
 <div class="panel-heading">
-    <h2>@ViewBag.Title</h2>
+    @*<h2>@ViewBag.Title</h2>*@&nbsp;
 </div>
 <div class="panel panel-default">
 
@@ -18,17 +19,277 @@
                 <div class="form-group col-lg-12">
                     <div class="col-sm-3">
                         <label> GRUPO </label>
-                        @Html.DropDownListFor(x => x.ID_GRUPO, (IEnumerable<SelectListItem>)ViewBag.Grupos, new { id = "ddOrigen", @class = "form-control" })
+                        @Html.DropDownListFor(x => x.ID_GRUPO, (IEnumerable<SelectListItem>)ViewBag.Grupos, new { id = "ddGrupos", @class = "form-control"})
                     </div>
-                </div>
-                <div class="form-group col-lg-12">
+
                     <div class="col-sm-3">
                         @Html.LabelFor(model => model.VIGENTE, htmlAttributes: new { @class = "control-label" })<br />
-                        @Html.CheckBox("VIGENTE", true)
+                        @*@Html.CheckBox("VIGENTE", new { id = "ckbVigente" })*@
+                      <input type="checkbox" name="ckbVigente" id="ckbVigente" checked="checked"/>
                     </div>
                 </div>
+
+            </div>
+                <div class="row">
+                    <div class="form-group col-lg-12">
+                        <div class="col-sm-3">
+                            <label>SUB-GRUPO</label>
+                            @*@Html.TextBox("txtSubG", 0, new { type = "number", @class = "form-control" })*@
+                            <input name="txtSubG" id="txtSubG" type="number" class="form-control" placeholder="0"/>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <label>DESCRIPCIÓN</label>
+                            @Html.TextBox("txtSubDesc", "", new {id= "txtSubDesc", type = "text", @class = "form-control" })
+                        </div>
+                    </div>
+
                 </div>
+                
         </div>
     }
 </div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+            <button id="addBtn" type="button" class="glyphicon glyphicon-plus btn btn-info pull-right" onclick="Agregar()"></button>
+            <span>&nbsp;</span>  
+    </div>
+    <div class="panel-body">
+        <div class="form-group">
+            <table id="tblPerfGrup" class="table table-bordered table-responsive">
+                <thead>
+                    <tr>
+                        <th>EDITAR</th>
+                        <th>FUENTE</th>
+                        <th>DESC</th>
+                        <th>ESTADO</th>
+                        <th>ELIMINAR</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
 
+    <script>
+        $(document).ready(function () {
+            //$('.panel-heading').append('<button id="addBtn" type="button" class="glyphicon glyphicon-plus btn btn-info pull-right" onclick="Agregar()"></button>');
+        });
+
+        var data=[];
+
+        function Agregar() {
+            debugger
+            if ($('#ckbVigente').is(":checked")) {
+                var perfil = true;
+            } else {
+                var perfil = false;
+            }
+
+
+            var grupo = $('#ddGrupos').val();
+            var fFinanciamientoId = grupo + $('#txtSubG').val();
+
+            if ($('#ckbVigente').val() == "") {
+                LobiboxAlert('warning', 'Precaución', 'Seleccione un Perfil.');
+            }
+            else 
+            {
+                cargaDetalle(fFinanciamientoId, $('#ddGrupos').val());
+                imprimir();
+                $('.ddGrupos-DropDownCls option').eq(0).prop('selected', true);
+            }
+        };
+
+        function cargaDetalle(fFinanciamientoId, grupo) {
+            debugger
+           
+            Desc_Perfil = $('#txtSubDesc').val();
+         
+
+            var ExisteRestriccion = false;
+            $.each(data, function (i, item) {
+                if (item.Perfil == fFinanciamientoId /*&& item.Grupo == grupo*/) {
+                    ExisteRestriccion = true;
+                }
+            });
+
+            debugger
+            if ($.isEmptyObject(data) || ExisteRestriccion == false) {
+                data.push({
+
+                   
+                    boton2: "<button class='btn-info'></button>",
+                    Perfil: fFinanciamientoId,
+                    Desc_Perf: Desc_Perfil,
+                    Grupo: "<input type='checkbox' name='ckbVigente' id='ckbVigente' checked='checked'/>",
+                    //Desc_Grup: Desc_Grupo,
+                    boton: "<button class='deleteButton' onclick='deleteButtonClick()'>Eliminar</button>",
+                    items: []
+                });
+            }
+            else
+            {
+                LobiboxAlert('warning', 'Precaución', 'La restricción ya esxiste.');
+            }
+        };
+
+        function imprimir() {
+            $('#tbTabla').remove();
+            if (!$.isEmptyObject(data)) {
+                document.getElementById("tblPerfGrup").appendChild(ToTable(data));
+            }
+        };
+
+        function ToTable(tblData) {
+
+            debugger
+            var table2 = document.createElement("tbody");
+            table2.id = "tbTabla";
+            table2.className = "table";
+            for (var x = 0; x < tblData.length; x++) {
+                var row = document.createElement("tr");
+            
+                var IdPerfCell = document.createElement("td");
+                var DescPerfCell = document.createElement("td");
+                var IdGrupoCell = document.createElement("td");
+                var DescGrupoCell = document.createElement("td");
+
+
+
+                //
+                var deleteButtonRestrriccionCell = document.createElement("td");
+                var deleteButtonRestriccion = document.createElement("button");
+                var iconButtonRestriccion = document.createElement("i");
+                var att = document.createAttribute("aria-hidden");
+                att.value = true;
+                iconButtonRestriccion.setAttributeNode(att);
+                iconButtonRestriccion.className = "fa fa-times";
+                deleteButtonRestriccion.className = "btn btn-danger";
+                deleteButtonRestriccion.style = "width:100%";
+
+
+                //-----------------------------------------------------
+                var editButtonRestrriccionCell = document.createElement("td");
+              
+                var editButtonRestriccion = document.createElement("button");
+                var editIconButtonRestriccion = document.createElement("i");
+                var attEdit = document.createAttribute("aria-hidden");
+                attEdit.value = true;
+                editIconButtonRestriccion.setAttributeNode(attEdit);
+                editIconButtonRestriccion.className = "fa fa-pencil-square-o";
+                editButtonRestriccion.className = "btn btn-info";
+                editButtonRestriccion.style = "width:100%";
+                //-----------------------------------------------------
+
+
+
+
+                var nameIdGrupo = "Perfiles_Grupos[" + x + "].ID_GRUPO";
+                var IdGrupo = "Perfiles_Grupos_" + x + "__ID_GRUPO";
+
+                var nameNgrupo = "Perfiles_Grupos[" + x + "].NOMBRE_GRUPO";
+                var idNgrupo = "Perfiles_Grupos_" + x + "__NOMBRE_PERFIL";
+
+                var nameIdPerfil = "Perfiles_Grupos[" + x + "].ID_PERFIL";
+                var IdPerfil = "Perfiles_Grupos_" + x + "__ID_PERFIL";
+
+                var nameNperfil = "Perfiles_Grupos[" + x + "].NOMBRE_PERFIL";
+                var idNperfil = "Perfiles_Grupos_" + x + "__NOMBRE_PERFIL";
+
+                var inputGrupo = document.createElement("input");
+                inputGrupo.id = IdGrupo;
+                inputGrupo.name = nameIdGrupo;
+                inputGrupo.value = tblData[x].Grupo;
+                inputGrupo.type = "Hidden";
+
+                var inputNGrupo = document.createElement("input");
+                inputNGrupo.id = idNgrupo;
+                inputNGrupo.name = nameNgrupo;
+                inputNGrupo.value = tblData[x].Desc_Grup;
+                inputNGrupo.type = "Hidden";
+
+                var inputPerfil = document.createElement("input");
+                inputPerfil.id = IdPerfil;
+                inputPerfil.name = nameIdPerfil;
+                inputPerfil.value = tblData[x].Perfil;
+                inputPerfil.type = "Hidden";
+
+                var inputNPerfil = document.createElement("input");
+                inputNPerfil.id = idNperfil;
+                inputNPerfil.name = nameNperfil;
+                inputNPerfil.value = tblData[x].Desc_Perf;
+                inputNPerfil.type = "Hidden";
+
+                //var _Sis = tblData[x].Sistema;
+                var _Perf = tblData[x].Perfil;
+                var _Grup = tblData[x].Grupo;
+
+                deleteButtonRestriccion.addEventListener("click", callDelete( _Perf, _Grup));
+                editButtonRestriccion.addEventListener("click", callEdit(_Perf, _Grup))
+                deleteButtonRestriccion.appendChild(iconButtonRestriccion);
+                editButtonRestriccion.appendChild(editIconButtonRestriccion);
+
+               
+                IdPerfCell.innerText = tblData[x].Perfil;
+                DescPerfCell.innerText = tblData[x].Desc_Perf;
+                IdGrupoCell.innerText = tblData[x].Grupo;
+                DescGrupoCell.innerText = tblData[x].Desc_Grup;
+                deleteButtonRestrriccionCell.appendChild(deleteButtonRestriccion);
+                editButtonRestrriccionCell.appendChild(editButtonRestriccion);
+
+              
+                row.appendChild(editButtonRestriccion);
+                row.appendChild(IdPerfCell);
+                row.appendChild(inputPerfil);
+                row.appendChild(DescPerfCell);
+                row.appendChild(inputNPerfil);
+                row.appendChild(IdGrupoCell);
+                row.appendChild(inputGrupo);
+                row.appendChild(DescGrupoCell);
+                row.appendChild(inputNGrupo);
+                row.appendChild(deleteButtonRestriccion);
+                //-----------------------------------------
+
+
+                table2.appendChild(row);
+            }
+            return table2;
+        }
+
+        function callDelete( Perfil, Grupo) {
+            return function () { deleteButtonClick(Perfil, Grupo); };
+        }
+        //----------------------------------------------------------------
+        function callEdit( Perfil, Grupo) {
+            return function () { editButtonClick(Perfil, Grupo); };
+        }
+        //----------------------------------------------------------------
+
+
+
+
+
+        function deleteButtonClick(Perfil, Grupo) {
+            for (var i = 0; i < data.length; i++) {
+                if (  data[i].Perfil == Perfil && data[i].Grupo == Grupo) {
+                    data.splice(i, 1);
+                }
+            }
+            imprimir();
+        }
+        //-----------------------------------------------------------------
+        function editButtonClick(Perfil, Grupo) {
+            for (var i = 0; i < data.length; i++) {
+                if (  data[i].Perfil == Perfil && data[i].Grupo == Grupo) {
+                   
+                    alert(data[i].Perfil + "," + data[i].Desc_Perf);
+                }
+            }
+            imprimir();
+        }
+
+
+
+
+    </script>
