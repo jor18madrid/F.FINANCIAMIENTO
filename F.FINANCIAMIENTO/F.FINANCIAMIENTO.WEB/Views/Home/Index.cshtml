@@ -118,7 +118,6 @@
             if ($.isEmptyObject(data) || ExisteRestriccion == false) {
                 data.push({
 
-                   
                     boton2: "<button class='btn-info'></button>",
                     Perfil: fFinanciamientoId,
                     Desc_Perf: Desc_Perfil,
@@ -185,6 +184,7 @@
                 var createCheckbox = document.createElement('input');
                 createCheckbox.type = 'checkbox';
                 createCheckbox.checked = 'checked';
+                createCheckbox.style = 'margin-left:40%;';
                 //createCheckbox.id = '';
 
                 //-----------------------------------------------------
@@ -239,18 +239,24 @@
                 DescGrupoCell.innerText = tblData[x].Desc_Grup;
                 deleteButtonRestrriccionCell.appendChild(deleteButtonRestriccion);
                 editButtonRestrriccionCell.appendChild(editButtonRestriccion);
-
+                createCheckboxCell.appendChild(createCheckbox);
               
                 row.appendChild(editButtonRestriccion);
                 row.appendChild(IdPerfCell);
                 row.appendChild(inputPerfil);
+                ///////////////////////////
+                row.appendChild(createCheckbox);
+                ///////////////////////////
                 row.appendChild(DescPerfCell);
                 row.appendChild(inputNPerfil);
-                row.appendChild(IdGrupoCell);
-                row.appendChild(inputGrupo);
-                row.appendChild(DescGrupoCell);
-                row.appendChild(inputNGrupo);
-                row.appendChild(deleteButtonRestriccion);       
+                ///////////////////////////
+                row.appendChild(deleteButtonRestriccion);
+                ///////////////////////////
+                //row.appendChild(IdGrupoCell);
+                //row.appendChild(inputGrupo);
+                //row.appendChild(DescGrupoCell);
+                //row.appendChild(inputNGrupo);
+             
                 //-----------------------------------------
 
                 table2.appendChild(row);
