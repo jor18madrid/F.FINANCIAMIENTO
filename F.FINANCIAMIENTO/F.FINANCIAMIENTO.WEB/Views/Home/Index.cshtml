@@ -59,11 +59,11 @@
             <table id="tblPerfGrup" class="table table-bordered table-responsive">
                 <thead>
                     <tr>
-                        <th>EDITAR</th>
+                        <th></th>
                         <th>FUENTE</th>
                         <th>DESC</th>
                         <th>ESTADO</th>
-                        <th>ELIMINAR</th>
+                        <th></th>
                     </tr>
                 </thead>
             </table>
@@ -80,10 +80,11 @@
 
         function Agregar() {
             debugger
+            var isChecked;
             if ($('#ckbVigente').is(":checked")) {
-                var perfil = true;
+                isChecked = "checked";
             } else {
-                var perfil = false;
+                isChecked = "";
             }
 
 
@@ -95,13 +96,13 @@
             }
             else 
             {
-                cargaDetalle(fFinanciamientoId, $('#ddGrupos').val());
+                cargaDetalle(isChecked,fFinanciamientoId,$('#ddGrupos').val());
                 imprimir();
                 $('.ddGrupos-DropDownCls option').eq(0).prop('selected', true);
             }
         };
 
-        function cargaDetalle(fFinanciamientoId, grupo) {
+        function cargaDetalle(isChecked,fFinanciamientoId, grupo) {
             debugger
            
             Desc_Perfil = $('#txtSubDesc').val();
@@ -121,7 +122,8 @@
                     boton2: "<button class='btn-info'></button>",
                     Perfil: fFinanciamientoId,
                     Desc_Perf: Desc_Perfil,
-                    Grupo: "<input type='checkbox' name='ckbVigente' id='ckbVigente' checked='checked'/>",
+                    //Grupo: "<input type='checkbox' name='ckbVigente' id='ckbVigente' checked='checked'/>",
+                    Grupo:isChecked,
                     //Desc_Grup: Desc_Grupo,
                     boton: "<button class='deleteButton' onclick='deleteButtonClick()'>Eliminar</button>",
                     items: []
@@ -183,7 +185,8 @@
                 var createCheckboxCell = document.createElement("td");
                 var createCheckbox = document.createElement('input');
                 createCheckbox.type = 'checkbox';
-                createCheckbox.checked = 'checked';
+                //createCheckbox.checked = 'checked';
+                createCheckbox.checked = tblData[x].Grupo;
                 createCheckbox.style = 'margin-left:40%;';
                 //createCheckbox.id = '';
 
@@ -275,10 +278,6 @@
         }
         //----------------------------------------------------------------
 
-
-
-
-
         function deleteButtonClick(Perfil, Grupo) {
             for (var i = 0; i < data.length; i++) {
                 if (  data[i].Perfil == Perfil && data[i].Grupo == Grupo) {
@@ -292,13 +291,9 @@
             for (var i = 0; i < data.length; i++) {
                 if (  data[i].Perfil == Perfil && data[i].Grupo == Grupo) {
                    
-                    alert(data[i].Perfil + "," + data[i].Desc_Perf);
+                    alert(data[i].Perfil + "," + data[i].Desc_Perf + "," + data[i].Grupo);
                 }
             }
             imprimir();
         }
-
-
-
-
     </script>
