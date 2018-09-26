@@ -160,6 +160,7 @@
 
                 //
                 var deleteButtonRestrriccionCell = document.createElement("td");
+                deleteButtonRestrriccionCell.width = "1%";
                 var deleteButtonRestriccion = document.createElement("button");
                 var iconButtonRestriccion = document.createElement("i");
                 var att = document.createAttribute("aria-hidden");
@@ -172,7 +173,7 @@
 
                 //-----------------------------------------------------
                 var editButtonRestrriccionCell = document.createElement("td");
-              
+                editButtonRestrriccionCell.width = "1%";
                 var editButtonRestriccion = document.createElement("button");
                 var editIconButtonRestriccion = document.createElement("i");
                 var attEdit = document.createAttribute("aria-hidden");
@@ -183,11 +184,12 @@
                 editButtonRestriccion.style = "width:100%";
                 //-----------------------------------------------------
                 var createCheckboxCell = document.createElement("td");
+                createCheckboxCell.width = "10px";
                 var createCheckbox = document.createElement('input');
                 createCheckbox.type = 'checkbox';
                 //createCheckbox.checked = 'checked';
                 createCheckbox.checked = tblData[x].Grupo;
-                createCheckbox.style = 'margin-left:40%;';
+                createCheckbox.style = 'margin-left:35%; margin-top:25%;';
                 //createCheckbox.id = '';
 
                 //-----------------------------------------------------
@@ -240,20 +242,32 @@
                 DescPerfCell.innerText = tblData[x].Desc_Perf;
                 IdGrupoCell.innerText = tblData[x].Grupo;
                 DescGrupoCell.innerText = tblData[x].Desc_Grup;
+                //deleteButtonRestrriccionCell.appendChild(deleteButtonRestriccion);
+                //editButtonRestrriccionCell.appendChild(editButtonRestriccion);
+                //createCheckboxCell.appendChild(createCheckbox);
+
+
+
                 deleteButtonRestrriccionCell.appendChild(deleteButtonRestriccion);
                 editButtonRestrriccionCell.appendChild(editButtonRestriccion);
                 createCheckboxCell.appendChild(createCheckbox);
+
+
+
+
+
               
-                row.appendChild(editButtonRestriccion);
+                //row.appendChild(editButtonRestriccion);
+                row.appendChild(editButtonRestrriccionCell);
                 row.appendChild(IdPerfCell);
                 row.appendChild(inputPerfil);
                 ///////////////////////////
-                row.appendChild(createCheckbox);
+                row.appendChild(createCheckboxCell);
                 ///////////////////////////
                 row.appendChild(DescPerfCell);
                 row.appendChild(inputNPerfil);
                 ///////////////////////////
-                row.appendChild(deleteButtonRestriccion);
+                row.appendChild(deleteButtonRestrriccionCell);
                 ///////////////////////////
                 //row.appendChild(IdGrupoCell);
                 //row.appendChild(inputGrupo);
