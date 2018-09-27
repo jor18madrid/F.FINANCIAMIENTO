@@ -45,7 +45,9 @@
                     </div>
 
                 </div>
-                
+                <div class="btnOk">
+
+                </div>
         </div>
     }
 </div>
@@ -61,8 +63,8 @@
                     <tr>
                         <th></th>
                         <th>FUENTE</th>
-                        <th>DESC</th>
                         <th>ESTADO</th>
+                        <th>DESC</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -73,13 +75,15 @@
 
     <script>
         $(document).ready(function () {
-            //$('.panel-heading').append('<button id="addBtn" type="button" class="glyphicon glyphicon-plus btn btn-info pull-right" onclick="Agregar()"></button>');
+            //$("#btnOk").click(function () {
+            //    alert("Boton Ok");
+            //});
         });
 
         var data=[];
+        var selectedDataIndex;
 
         function Agregar() {
-            debugger
             var isChecked;
             if ($('#ckbVigente').is(":checked")) {
                 isChecked = "checked";
@@ -103,7 +107,7 @@
         };
 
         function cargaDetalle(isChecked,fFinanciamientoId, grupo) {
-            debugger
+            
            
             Desc_Perfil = $('#txtSubDesc').val();
          
@@ -114,24 +118,19 @@
                     ExisteRestriccion = true;
                 }
             });
-
-            debugger
             if ($.isEmptyObject(data) || ExisteRestriccion == false) {
                 data.push({
-
                     boton2: "<button class='btn-info'></button>",
                     Perfil: fFinanciamientoId,
                     Desc_Perf: Desc_Perfil,
-                    //Grupo: "<input type='checkbox' name='ckbVigente' id='ckbVigente' checked='checked'/>",
                     Grupo:isChecked,
-                    //Desc_Grup: Desc_Grupo,
                     boton: "<button class='deleteButton' onclick='deleteButtonClick()'>Eliminar</button>",
                     items: []
                 });
             }
             else
             {
-                LobiboxAlert('warning', 'Precaución', 'La restricción ya esxiste.');
+                alert('Precaución, '+'la restricción ya esxiste.');
             }
         };
 
@@ -189,7 +188,7 @@
                 createCheckbox.type = 'checkbox';
                 //createCheckbox.checked = 'checked';
                 createCheckbox.checked = tblData[x].Grupo;
-                createCheckbox.style = 'margin-left:35%; margin-top:25%;';
+                createCheckbox.style = 'margin-left:35%; margin-top:20%; ';
                 //createCheckbox.id = '';
 
                 //-----------------------------------------------------
@@ -252,27 +251,14 @@
                 editButtonRestrriccionCell.appendChild(editButtonRestriccion);
                 createCheckboxCell.appendChild(createCheckbox);
 
-
-
-
-
-              
-                //row.appendChild(editButtonRestriccion);
                 row.appendChild(editButtonRestrriccionCell);
                 row.appendChild(IdPerfCell);
                 row.appendChild(inputPerfil);
-                ///////////////////////////
                 row.appendChild(createCheckboxCell);
-                ///////////////////////////
                 row.appendChild(DescPerfCell);
                 row.appendChild(inputNPerfil);
-                ///////////////////////////
                 row.appendChild(deleteButtonRestrriccionCell);
-                ///////////////////////////
-                //row.appendChild(IdGrupoCell);
-                //row.appendChild(inputGrupo);
-                //row.appendChild(DescGrupoCell);
-                //row.appendChild(inputNGrupo);
+              
              
                 //-----------------------------------------
 
@@ -303,11 +289,16 @@
         //-----------------------------------------------------------------
         function editButtonClick(Perfil, Grupo) {
             for (var i = 0; i < data.length; i++) {
-                if (  data[i].Perfil == Perfil && data[i].Grupo == Grupo) {
-                   
-                    alert(data[i].Perfil + "," + data[i].Desc_Perf + "," + data[i].Grupo);
+                if (data[i].Perfil == Perfil && data[i].Grupo == Grupo) {
+                    selectedDataIndex = i;
+                    $('.btnOk').append('<button id="btnOk" type="button" class="glyphicon glyphicon-ok btn btn-success pull-left" onclick="Editar()"></button>');
                 }
             }
             imprimir();
+        }
+
+        function Editar() {
+            data[selectedDataIndex]
+
         }
     </script>
