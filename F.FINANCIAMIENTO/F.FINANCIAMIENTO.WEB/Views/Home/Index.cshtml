@@ -43,7 +43,7 @@
                     </div>
 
                 </div>
-                
+                <div class="clsOk"></div>
         </div>
     }
 </div>
@@ -74,7 +74,8 @@
             //$('.panel-heading').append('<button id="addBtn" type="button" class="glyphicon glyphicon-plus btn btn-info pull-right" onclick="Agregar()"></button>');
         });
 
-        var data=[];
+        var data = [];
+        var selectDataIndex;
 
         function Agregar() {
             debugger
@@ -127,7 +128,7 @@
             }
             else
             {
-                LobiboxAlert('warning', 'Precaución', 'La restricción ya esxiste.');
+                alert('Precaución, '+'la restricción ya esxiste.');
             }
         };
 
@@ -286,10 +287,13 @@
         function editButtonClick(Perfil, Grupo) {
             for (var i = 0; i < data.length; i++) {
                 if (  data[i].Perfil == Perfil && data[i].Grupo == Grupo) {
-                   
+                    $('.clsOk').append('<button id="btnOk" type="button" class="glyphicon glyphicon-ok btn btn-success pull-left" onclick="Agregar()"></button>');
+                    selectDataIndex = i;
                     alert(data[i].Perfil + "," + data[i].Desc_Perf + "," + data[i].Grupo);
                 }
             }
             imprimir();
         }
+
+
     </script>
