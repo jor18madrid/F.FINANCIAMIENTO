@@ -47,28 +47,32 @@
         </div>
     }
 </div>
-<div class="panel panel-default">
-    <div class="panel-heading">
+
+
+<div id="contentLst">
+    <div class="panel panel-default">
+        <div class="panel-heading">
             <button id="addBtn" type="button" class="glyphicon glyphicon-plus btn btn-info pull-right" onclick="Agregar()"></button>
-            <span>&nbsp;</span>  
-    </div>
-    <div class="panel-body">
-        <div class="form-group">
-            <table id="tblPerfGrup" class="table table-bordered table-responsive">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>FUENTE</th>
-                        <th>DESC</th>
-                        <th>ESTADO</th>
-                        <th></th>
-                    </tr>
-                </thead>
-            </table>
+            <span>&nbsp;</span>
+        </div>
+
+        <div class="panel-body">
+            <div class="form-group">
+                <table id="tblPerfGrup" class="table table-bordered table-responsive">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>FUENTE</th>
+                            <th>DESC</th>
+                            <th>ESTADO</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
         </div>
     </div>
 </div>
-
     <script>
         $(document).ready(function () {
             //$('.panel-heading').append('<button id="addBtn" type="button" class="glyphicon glyphicon-plus btn btn-info pull-right" onclick="Agregar()"></button>');
@@ -76,9 +80,10 @@
 
         var data = [];
         var selectDataIndex;
+        var indexAllowed;
 
         function Agregar() {
-            debugger
+            
             var isChecked;
             if ($('#ckbVigente').is(":checked")) {
                 isChecked = "checked";
@@ -102,7 +107,7 @@
         };
 
         function cargaDetalle(isChecked,fFinanciamientoId, grupo) {
-            debugger
+            
            
             Desc_Perfil = $('#txtSubDesc').val();
          
@@ -114,7 +119,7 @@
                 }
             });
 
-            debugger
+            
             if ($.isEmptyObject(data) || ExisteRestriccion == false) {
                 data.push({
 
@@ -141,7 +146,7 @@
 
         function ToTable(tblData) {
 
-            debugger
+            
             var table2 = document.createElement("tbody");
             table2.id = "tbTabla";
             table2.className = "table";
@@ -286,14 +291,77 @@
         //-----------------------------------------------------------------
         function editButtonClick(Perfil, Grupo) {
             for (var i = 0; i < data.length; i++) {
-                if (  data[i].Perfil == Perfil && data[i].Grupo == Grupo) {
-                    $('.clsOk').append('<button id="btnOk" type="button" class="glyphicon glyphicon-ok btn btn-success pull-left" onclick="Agregar()"></button>');
+                if (data[i].Perfil == Perfil && data[i].Grupo == Grupo) {
+                    
                     selectDataIndex = i;
-                    alert(data[i].Perfil + "," + data[i].Desc_Perf + "," + data[i].Grupo);
+                    indexAllowed = data[i].Perfil;
+                    $("#contentLst").slideUp("slow");
+                    $('.clsOk').append('<button id="btnOk" type="button" class="glyphicon glyphicon-ok btn btn-success pull-left" onclick="Editar()"></button>');
+                    document.getElementById("txtSubDesc").focus();
                 }
             }
             imprimir();
         }
+
+        function Editar() {
+            
+            var isChecked;
+            if ($('#ckbVigente').is(":checked")) {
+                isChecked = "checked";
+            } else {
+                isChecked = "";
+            }
+
+
+            var grupo = $('#ddGrupos').val();
+            var fFinanciamientoId = grupo + $('#txtSubG').val();
+
+            if ($('#ckbVigente').val() == "") {
+                LobiboxAlert('warning', 'Precaución', 'Seleccione un Perfil.');
+            }
+            else {
+                cargaDetalleEditado(isChecked, fFinanciamientoId, $('#ddGrupos').val());
+                imprimir();
+                $('.ddGrupos-DropDownCls option').eq(0).prop('selected', true);
+            }
+        }
+
+        function cargaDetalleEditado(isChecked, fFinanciamientoId, grupo) {
+            
+
+            Desc_Perfil = $('#txtSubDesc').val();
+
+
+            var ExisteRestriccion = false;
+            $.each(data, function (i, item) {
+                if (item.Perfil == fFinanciamientoId) {
+                    ExisteRestriccion = true;
+                }
+            });
+
+            debugger
+            if ($.isEmptyObject(data) || ExisteRestriccion == false) {
+                //for (var i = 0; i < data.length; i++) {
+                //    if (indexAllowed == data[i].Perfil) {
+                        data[selectDataIndex].boton2 = "<button class='btn-info'></button>";
+                        data[selectDataIndex].Perfil = fFinanciamientoId;
+                        data[selectDataIndex].Desc_Perf = Desc_Perfil;
+                        data[selectDataIndex].Grupo = isChecked;
+                        data[selectDataIndex].boton = "<button class='deleteButton' onclick='deleteButtonClick()'>Eliminar</button>";
+                        $('#btnOk').remove();
+                        $("#contentLst").slideDown("slow");
+                //    }
+                //    else {
+                //        alert('Precaución, ' + 'el codigo existe en otro index.');
+                //    }
+                //}
+            }
+            else {
+                alert('Precaución, ' + 'la restricción ya esxiste.');
+            }
+        };
+
+
 
 
     </script>
