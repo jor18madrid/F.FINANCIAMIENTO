@@ -41,9 +41,8 @@
                             @Html.TextBox("txtSubDesc", "", new {id= "txtSubDesc", type = "text", @class = "form-control" })
                         </div>
                     </div>
-
                 </div>
-                <div class="clsOk"></div>
+                <div id="clsOk"></div>
         </div>
     }
 </div>
@@ -75,7 +74,8 @@
 </div>
     <script>
         $(document).ready(function () {
-            //$('.panel-heading').append('<button id="addBtn" type="button" class="glyphicon glyphicon-plus btn btn-info pull-right" onclick="Agregar()"></button>');
+            debugger
+            $("#clsOk").slideUp("slow");
         });
 
         var data = [];
@@ -292,12 +292,18 @@
         function editButtonClick(Perfil, Grupo) {
             for (var i = 0; i < data.length; i++) {
                 if (data[i].Perfil == Perfil && data[i].Grupo == Grupo) {
-                    
+                    debugger
                     selectDataIndex = i;
                     indexAllowed = data[i].Perfil;
-                    $("#contentLst").slideUp("slow");
-                    $('.clsOk').append('<button id="btnOk" type="button" class="glyphicon glyphicon-ok btn btn-success pull-left" onclick="Editar()"></button>');
+                    //$("#contentLst").slideUp("slow");
+                    $('#clsOk').append('<button id="btnOk" type="button" class="glyphicon glyphicon-ok btn btn-success pull-left" onclick="Editar()"></button>');
+                    $("#clsOk").slideDown("slow");
                     document.getElementById("txtSubDesc").focus();
+                    var element = document.getElementById("contentLst");
+                    element.classList.add("lobibox-open");
+                    $('#contentLst').append('<div class="lobibox-backdrop"></div>');
+                
+
                 }
             }
             imprimir();
@@ -341,20 +347,13 @@
 
             debugger
             if ($.isEmptyObject(data) || ExisteRestriccion == false) {
-                //for (var i = 0; i < data.length; i++) {
-                //    if (indexAllowed == data[i].Perfil) {
                         data[selectDataIndex].boton2 = "<button class='btn-info'></button>";
                         data[selectDataIndex].Perfil = fFinanciamientoId;
                         data[selectDataIndex].Desc_Perf = Desc_Perfil;
                         data[selectDataIndex].Grupo = isChecked;
                         data[selectDataIndex].boton = "<button class='deleteButton' onclick='deleteButtonClick()'>Eliminar</button>";
+                        $("#clsOk").slideUp("slow");
                         $('#btnOk').remove();
-                        $("#contentLst").slideDown("slow");
-                //    }
-                //    else {
-                //        alert('Precaución, ' + 'el codigo existe en otro index.');
-                //    }
-                //}
             }
             else {
                 alert('Precaución, ' + 'la restricción ya esxiste.');
