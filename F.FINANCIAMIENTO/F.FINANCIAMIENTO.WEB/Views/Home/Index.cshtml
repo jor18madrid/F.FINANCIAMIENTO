@@ -1,4 +1,4 @@
-﻿@model F.FINANCIAMIENTO.DTO.SAS_GRUPO_FILTRO_DTO
+﻿@model F.FINANCIAMIENTO.DTO.INSERTDTO
 
 @{
     ViewBag.Title = "Index";
@@ -10,7 +10,7 @@
 </div>
 <div class="panel panel-default">
 
-    @using (Html.BeginForm("Home", "Home", FormMethod.Get, new { id = "form1" }))
+    @using (Html.BeginForm("GetData", "Home", FormMethod.Get, new { id = "form" }))
     {
         <div class="form-horizontal panel-body">
             <br />
@@ -18,78 +18,91 @@
                 <div class="form-group col-lg-12">
                     <div class="col-sm-3">
                         <label> GRUPO </label>
-                        @Html.DropDownListFor(x => x.ID_GRUPO, (IEnumerable<SelectListItem>)ViewBag.Grupos, new { id = "ddGrupos", @class = "form-control"})
+                        @Html.DropDownList("dd",(IEnumerable<SelectListItem>)ViewBag.Grupos, new { id = "ddGrupos", @class = "form-control" })
                     </div>
 
                     <div class="col-sm-3">
-                        @Html.LabelFor(model => model.VIGENTE, htmlAttributes: new { @class = "control-label" })<br />
-                      <input type="checkbox" name="ckbVigente" id="ckbVigente" checked="checked"/>
+                        @Html.Label("VIGENTE", htmlAttributes: new { @class = "control-label" })<br />
+                        <input type="checkbox" name="ckbVigente" id="ckbVigente" checked="checked" />
                     </div>
                 </div>
 
             </div>
-                <div class="row">
-                    <div class="form-group col-lg-12">
-                        <div class="col-sm-3">
-                            <label>SUB-GRUPO</label>
-                            <input name="txtSubG" id="txtSubG" type="number" class="form-control" placeholder="0"/>
-                        </div>
-                        <div class="col-sm-3">
-                            <label>DESCRIPCIÓN</label>
-                            @Html.TextBox("txtSubDesc", "", new {id= "txtSubDesc", type = "text", @class = "form-control" })
-                        </div>
+            <div class="row">
+                <div class="form-group col-lg-12">
+                    <div class="col-sm-3">
+                        <label>SUB-GRUPO</label>
+                        <input name="txtSubG" id="txtSubG" type="number" class="form-control" placeholder="0" />
+                    </div>
+                    <div class="col-sm-3">
+                        <label>DESCRIPCIÓN</label>
+                        @Html.TextBox("txtSubDesc", "", new { id = "txtSubDesc", type = "text", @class = "form-control" })
                     </div>
                 </div>
-                <div id="clsOk"></div>
+            </div>
+            <div id="clsOk"></div>
         </div>
-    }
-</div>
 
-
-<div id="contentLst">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <button id="addBtn" type="button" class="glyphicon glyphicon-plus btn btn-info pull-right" onclick="Agregar()"></button>
-            <span>&nbsp;</span>
-        </div>
-        <div class="ChkBrOnly">
-            <div class="panel-body">
-                <div class="form-group">
-                    <table id="tblPerfGrup" class="table table-bordered table-responsive">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>FUENTE</th>
-                                <th>ESTADO</th>
-                                <th>DESC</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                    </table>
+    <div id="contentLst">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <button id="addBtn" type="button" class="glyphicon glyphicon-plus btn btn-info pull-right" onclick="Agregar()"></button>
+                <span>&nbsp;</span>
+            </div>
+            <div class="ChkBrOnly">
+                <div class="panel-body">
+                    <div class="form-group">
+                        <table id="tblPerfGrup" class="table table-bordered table-responsive">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>FUENTE</th>
+                                    <th>VIGENTE</th>
+                                    <th>DESC</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    <div id="pFooter" class="panel-footer">
+        <div id="pBodyFooter" class="panel-body" style="padding:0px;">
+            <button id="btnGuardar" type="button" class="glyphicon glyphicon-save btn btn-success btn-lg pull-left"  onclick="Guardar()"></button>
+        </div>
+    </div>
+    }
 </div>
 
 <style>
-    
-    
-    .ChkBrOnly input[type="checkbox"][readonly] {
+       .ChkBrOnly input[type="checkbox"][readonly] {
         pointer-events: none;
-
     }
 </style>
 
     <script>
         $(document).ready(function () {
             $("#clsOk").slideUp("slow");
+            //$("#pFooter").slideUp("slow");
         });
 
         var data = [];
         var selectDataIndex;
         var indexAllowed;
         var btnPressed = 0;
+
+        function Guardar() {
+            if(data.length <= 0)
+            {
+                alert("No hay datos en la lista");
+            }
+            else
+            {
+                document.getElementById("form").submit();
+            }
+        };
 
         function Agregar() {
             if (!btnPressed == 1) {
@@ -137,7 +150,6 @@
 
                     grupoId: grupo,
                     sGrupoTxt: sGrupo,
-                   
                     boton2: "<button class='btn-info'></button>",
                     Perfil: fFinanciamientoId,
                     Desc_Perf: Desc_Perfil,
@@ -168,14 +180,21 @@
             for (var x = 0; x < tblData.length; x++) {
                 var row = document.createElement("tr");
             
+                //
                 var IdPerfCell = document.createElement("td");
+                IdPerfCell.width = "150px";
+                //
+                //
                 var DescPerfCell = document.createElement("td");
+                DescPerfCell.width = "800px";
+                //
                 var IdGrupoCell = document.createElement("td");
                 var DescGrupoCell = document.createElement("td");
                 
 
                 var deleteButtonRestrriccionCell = document.createElement("td");
                 deleteButtonRestrriccionCell.width = "1%";
+                deleteButtonRestrriccionCell.style = "padding: 0px;";
                 var deleteButtonRestriccion = document.createElement("button");
                 var iconButtonRestriccion = document.createElement("i");
                 var att = document.createAttribute("aria-hidden");
@@ -184,71 +203,82 @@
                 iconButtonRestriccion.className = "fa fa-times";
                 deleteButtonRestriccion.className = "btn btn-danger";
                 deleteButtonRestriccion.style = "width:100%";
-                //-----------------------------------------------------
+                //-----------------------------------------------------Boton Edit Original
+                //var editButtonRestrriccionCell = document.createElement("td");
+                //editButtonRestrriccionCell.width = "1%";
+                //var editButtonRestriccion = document.createElement("input");
+                //var editIconButtonRestriccion = document.createElement("i");
+                //var attEdit = document.createAttribute("aria-hidden");
+                //attEdit.value = true;
+                //editIconButtonRestriccion.setAttributeNode(attEdit);
+                //editIconButtonRestriccion.className = "fa fa-pencil-square-o";
+                //editButtonRestriccion.type = "button";
+                //editButtonRestriccion.className = "glyphicon glyphicon-edit btn btn-info";
+                //editButtonRestriccion.style = "width:100%";
+
+                //
                 var editButtonRestrriccionCell = document.createElement("td");
-                editButtonRestrriccionCell.width = "1%";
-                var editButtonRestriccion = document.createElement("button");
-                var editIconButtonRestriccion = document.createElement("i");
-                var attEdit = document.createAttribute("aria-hidden");
-                attEdit.value = true;
-                editIconButtonRestriccion.setAttributeNode(attEdit);
-                editIconButtonRestriccion.className = "fa fa-pencil-square-o";
-                editButtonRestriccion.className = "btn btn-info";
-                editButtonRestriccion.style = "width:100%";
+                editButtonRestrriccionCell.width = "1px";
+                editButtonRestrriccionCell.style = "padding: 0px;";
+                //var editButtonRestriccion = '<button id="btnGuardar" type="button" class="glyphicon glyphicon-edit btn btn-info" style="width: 100%;"></button>';
+                editButtonRestrriccionCell.innerHTML = '<button id="btnGuardar" type="button" class="glyphicon glyphicon-edit btn btn-info" style="width:37px; height:34px; display:block; "></button>';
                 //-----------------------------------------------------
                 var createCheckboxCell = document.createElement("td");
-                createCheckboxCell.width = "10px";
+                createCheckboxCell.width = "1px";
+                createCheckboxCell.style = "padding: 0px; text-align: center; vertical-align: middle;";
                 var createCheckbox = document.createElement('input');
                 createCheckbox.type = 'checkbox';
                 createCheckbox.checked = tblData[x].Grupo;
                 createCheckbox.setAttribute("readonly",null);
-                createCheckbox.style = 'margin-left:35%; margin-top:25%;';
+                createCheckbox.style = 'width:37px; height:25px;';
 
 
                 //-----------------------------------------------------
-                var nameIdGrupo = "Perfiles_Grupos[" + x + "].ID_GRUPO";
-                var IdGrupo = "Perfiles_Grupos_" + x + "__ID_GRUPO";
+                var txtIdGrupo = "FuenteFin[" + x + "].ID_GRUPO";
+                //var IdGrupo = "Perfiles_Grupos_" + x + "__ID_GRUPO";
+                var txtFuenteFin = "FuenteFin[" + x + "].FUENTE_FINANCIAMIENTO";
+                //var idNgrupo = "Perfiles_Grupos_" + x + "__NOMBRE_PERFIL";
+                var txtVigente = "FuenteFin[" + x + "].VIGENTE";
+                //var idNperfil = "Perfiles_Grupos_" + x + "__NOMBRE_PERFIL";
+                var txtDesc = "FuenteFin[" + x + "].DESC";
+                //var IdPerfil = "Perfiles_Grupos_" + x + "__ID_PERFIL";
 
-                var nameNgrupo = "Perfiles_Grupos[" + x + "].NOMBRE_GRUPO";
-                var idNgrupo = "Perfiles_Grupos_" + x + "__NOMBRE_PERFIL";
-
-                var nameIdPerfil = "Perfiles_Grupos[" + x + "].ID_PERFIL";
-                var IdPerfil = "Perfiles_Grupos_" + x + "__ID_PERFIL";
-
-                var nameNperfil = "Perfiles_Grupos[" + x + "].NOMBRE_PERFIL";
-                var idNperfil = "Perfiles_Grupos_" + x + "__NOMBRE_PERFIL";
+              
 
                 var inputGrupo = document.createElement("input");
-                inputGrupo.id = IdGrupo;
-                inputGrupo.name = nameIdGrupo;
-                inputGrupo.value = tblData[x].Grupo;
+                inputGrupo.id = txtIdGrupo;
+                inputGrupo.name = txtIdGrupo;
+                inputGrupo.value = tblData[x].grupoId;
                 inputGrupo.type = "Hidden";
 
-                var inputNGrupo = document.createElement("input");
-                inputNGrupo.id = idNgrupo;
-                inputNGrupo.name = nameNgrupo;
-                inputNGrupo.value = tblData[x].Desc_Grup;
-                inputNGrupo.type = "Hidden";
+                var inputFuenteFin = document.createElement("input");
+                inputFuenteFin.id = txtFuenteFin;
+                inputFuenteFin.name = txtFuenteFin;
+                inputFuenteFin.value = tblData[x].Perfil;
+                inputFuenteFin.type = "Hidden";
 
-                var inputPerfil = document.createElement("input");
-                inputPerfil.id = IdPerfil;
-                inputPerfil.name = nameIdPerfil;
-                inputPerfil.value = tblData[x].Perfil;
-                inputPerfil.type = "Hidden";
+                var inputVigente = document.createElement("input");
+                inputVigente.id = txtVigente;
+                inputVigente.name = txtVigente;
+                inputVigente.value = tblData[x].Grupo;
+                inputVigente.type = "Hidden";
 
-                var inputNPerfil = document.createElement("input");
-                inputNPerfil.id = idNperfil;
-                inputNPerfil.name = nameNperfil;
-                inputNPerfil.value = tblData[x].Desc_Perf;
-                inputNPerfil.type = "Hidden";
+                var inputDesc = document.createElement("input");
+                inputDesc.id = txtDesc;
+                inputDesc.name = txtDesc;
+                inputDesc.value = tblData[x].Desc_Perf;
+                inputDesc.type = "Hidden";
+
+
+
 
                 var _Perf = tblData[x].Perfil;
                 var _Grup = tblData[x].Grupo;
                 //---------------------------------------------------------------
                 deleteButtonRestriccion.addEventListener("click", callDelete( _Perf, _Grup));
-                editButtonRestriccion.addEventListener("click", callEdit(_Perf, _Grup));
+                editButtonRestrriccionCell.addEventListener("click", callEdit(_Perf, _Grup));
                 deleteButtonRestriccion.appendChild(iconButtonRestriccion);
-                editButtonRestriccion.appendChild(editIconButtonRestriccion);
+                //editButtonRestriccion.appendChild(editIconButtonRestriccion);
                 //----------------------------------------------------------------
                 IdPerfCell.innerText = tblData[x].Perfil;
                 DescPerfCell.innerText = tblData[x].Desc_Perf;
@@ -256,15 +286,29 @@
                 DescGrupoCell.innerText = tblData[x].Desc_Grup;
                 //-----------------------------------------------------------------
                 deleteButtonRestrriccionCell.appendChild(deleteButtonRestriccion);
-                editButtonRestrriccionCell.appendChild(editButtonRestriccion);
+                //editButtonRestrriccionCell.appendChild(editButtonRestriccion);
                 createCheckboxCell.appendChild(createCheckbox);
                 //------------------------------------------------------------------
                 row.appendChild(editButtonRestrriccionCell);
                 row.appendChild(IdPerfCell);
-                row.appendChild(inputPerfil);
+
+                //idgrupo/Fuentefin
+                row.appendChild(inputGrupo);
+                row.appendChild(inputFuenteFin);
+                //
+
                 row.appendChild(createCheckboxCell);
+
+                //Vigente
+                row.appendChild(inputVigente);
+                //
+
                 row.appendChild(DescPerfCell);
-                row.appendChild(inputNPerfil);
+
+                //Desc
+                row.appendChild(inputDesc);
+                //
+
                 row.appendChild(deleteButtonRestrriccionCell);
           
 
@@ -275,12 +319,16 @@
 
         function callDelete(Perfil, Grupo)
         {
-            return function () { deleteButtonClick(Perfil, Grupo); };
+            return function () {
+                deleteButtonClick(Perfil, Grupo);
+            };
         }
         //----------------------------------------------------------------
         function callEdit(Perfil, Grupo)
         {
-            return function () { editButtonClick(Perfil, Grupo); };
+            return function () {
+                editButtonClick(Perfil, Grupo);
+            };
         }
         //----------------------------------------------------------------
 
@@ -319,19 +367,15 @@
                         $("#ckbVigente").prop("checked",true);
                     }
 
-
                     document.getElementById("txtSubG").focus();
                     if (btnPressed == 0) {
                         $('#clsOk').append('<button id="btnOk" type="button" class="glyphicon glyphicon-ok btn btn-success pull-left" onclick="Editar()"></button>');
                         $("#clsOk").slideDown("slow");
                         btnPressed = 1;
                     }
-                   
 
-                    //var element = document.getElementById("contentLst");
-                    //element.classList.add("lobibox-open");
-                    //$('#contentLst').append('<div class="lobibox-backdrop"></div>');
                 }
+
             }
         }
 

@@ -8,8 +8,7 @@ namespace F.FINANCIAMIENTO.DTO
 {
     public class INSERTDTO
     {
-        public INSERTDTO() { }
-
-        List<LSTOFINSERT> FuenteFin { get; set; }
+        //public INSERTDTO() { }
+        public List<LSTOFINSERT> FuenteFin { get; set; }
     }
 }

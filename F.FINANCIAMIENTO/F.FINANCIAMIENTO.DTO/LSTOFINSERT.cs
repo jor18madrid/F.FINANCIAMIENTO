@@ -9,7 +9,8 @@ namespace F.FINANCIAMIENTO.DTO
     public class LSTOFINSERT
     {
         public int ID_GRUPO { get; set; }
-        public int ID_SUB_GRUPO { get; set; }
-       
+        public int FUENTE_FINANCIAMIENTO { get; set; }
+        public string DESC { get; set; }
+        public string VIGENTE { get; set; }
     }
 }
