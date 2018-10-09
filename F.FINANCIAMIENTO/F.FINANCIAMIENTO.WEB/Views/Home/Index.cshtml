@@ -1,13 +1,12 @@
 ﻿@model F.FINANCIAMIENTO.DTO.SAS_GRUPO_FILTRO_DTO
 
-
 @{
     ViewBag.Title = "Index";
 }
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 
 <div class="panel-heading">
-    @*<h2>@ViewBag.Title</h2>*@&nbsp;
+    &nbsp;
 </div>
 <div class="panel panel-default">
 
@@ -35,7 +34,6 @@
                             <label>SUB-GRUPO</label>
                             <input name="txtSubG" id="txtSubG" type="number" class="form-control" placeholder="0"/>
                         </div>
-
                         <div class="col-sm-3">
                             <label>DESCRIPCIÓN</label>
                             @Html.TextBox("txtSubDesc", "", new {id= "txtSubDesc", type = "text", @class = "form-control" })
@@ -54,59 +52,73 @@
             <button id="addBtn" type="button" class="glyphicon glyphicon-plus btn btn-info pull-right" onclick="Agregar()"></button>
             <span>&nbsp;</span>
         </div>
-
-        <div class="panel-body">
-            <div class="form-group">
-                <table id="tblPerfGrup" class="table table-bordered table-responsive">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>FUENTE</th>
-                            <th>DESC</th>
-                            <th>ESTADO</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                </table>
+        <div class="ChkBrOnly">
+            <div class="panel-body">
+                <div class="form-group">
+                    <table id="tblPerfGrup" class="table table-bordered table-responsive">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>FUENTE</th>
+                                <th>ESTADO</th>
+                                <th>DESC</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    
+    
+    .ChkBrOnly input[type="checkbox"][readonly] {
+        pointer-events: none;
+
+    }
+</style>
+
     <script>
         $(document).ready(function () {
-            debugger
             $("#clsOk").slideUp("slow");
         });
 
         var data = [];
         var selectDataIndex;
         var indexAllowed;
+        var btnPressed = 0;
 
         function Agregar() {
-            
-            var isChecked;
-            if ($('#ckbVigente').is(":checked")) {
-                isChecked = "checked";
-            } else {
-                isChecked = "";
+            if (!btnPressed == 1) {
+                var isChecked;
+                if ($('#ckbVigente').is(":checked")) {
+                    isChecked = "checked";
+                } else {
+                    isChecked = "";
+                }
+
+
+                var grupo = $('#ddGrupos').val();
+                var fFinanciamientoId = grupo + $('#txtSubG').val();
+
+                if ($('#ckbVigente').val() == "") {
+                    LobiboxAlert('warning', 'Precaución', 'Seleccione un Perfil.');
+                }
+                else {
+                    cargaDetalle(isChecked, fFinanciamientoId, $('#ddGrupos').val(), $('#txtSubG').val());
+                    imprimir();
+                    $('.ddGrupos-DropDownCls option').eq(0).prop('selected', true);
+                }
             }
-
-
-            var grupo = $('#ddGrupos').val();
-            var fFinanciamientoId = grupo + $('#txtSubG').val();
-
-            if ($('#ckbVigente').val() == "") {
-                LobiboxAlert('warning', 'Precaución', 'Seleccione un Perfil.');
-            }
-            else 
-            {
-                cargaDetalle(isChecked,fFinanciamientoId,$('#ddGrupos').val());
-                imprimir();
-                $('.ddGrupos-DropDownCls option').eq(0).prop('selected', true);
+            else {
+                alert("Esta en modo edición")
             }
         };
 
-        function cargaDetalle(isChecked,fFinanciamientoId, grupo) {
+        function cargaDetalle(isChecked,fFinanciamientoId, grupo,sGrupo) {
             
            
             Desc_Perfil = $('#txtSubDesc').val();
@@ -123,6 +135,9 @@
             if ($.isEmptyObject(data) || ExisteRestriccion == false) {
                 data.push({
 
+                    grupoId: grupo,
+                    sGrupoTxt: sGrupo,
+                   
                     boton2: "<button class='btn-info'></button>",
                     Perfil: fFinanciamientoId,
                     Desc_Perf: Desc_Perfil,
@@ -142,11 +157,11 @@
             if (!$.isEmptyObject(data)) {
                 document.getElementById("tblPerfGrup").appendChild(ToTable(data));
             }
+            $('#txtSubG').val("");
+            $('#txtSubDesc').val("");
         };
 
         function ToTable(tblData) {
-
-            
             var table2 = document.createElement("tbody");
             table2.id = "tbTabla";
             table2.className = "table";
@@ -157,10 +172,8 @@
                 var DescPerfCell = document.createElement("td");
                 var IdGrupoCell = document.createElement("td");
                 var DescGrupoCell = document.createElement("td");
+                
 
-
-
-                //
                 var deleteButtonRestrriccionCell = document.createElement("td");
                 deleteButtonRestrriccionCell.width = "1%";
                 var deleteButtonRestriccion = document.createElement("button");
@@ -171,8 +184,6 @@
                 iconButtonRestriccion.className = "fa fa-times";
                 deleteButtonRestriccion.className = "btn btn-danger";
                 deleteButtonRestriccion.style = "width:100%";
-
-
                 //-----------------------------------------------------
                 var editButtonRestrriccionCell = document.createElement("td");
                 editButtonRestrriccionCell.width = "1%";
@@ -190,7 +201,9 @@
                 var createCheckbox = document.createElement('input');
                 createCheckbox.type = 'checkbox';
                 createCheckbox.checked = tblData[x].Grupo;
+                createCheckbox.setAttribute("readonly",null);
                 createCheckbox.style = 'margin-left:35%; margin-top:25%;';
+
 
                 //-----------------------------------------------------
                 var nameIdGrupo = "Perfiles_Grupos[" + x + "].ID_GRUPO";
@@ -231,30 +244,21 @@
 
                 var _Perf = tblData[x].Perfil;
                 var _Grup = tblData[x].Grupo;
-
+                //---------------------------------------------------------------
                 deleteButtonRestriccion.addEventListener("click", callDelete( _Perf, _Grup));
                 editButtonRestriccion.addEventListener("click", callEdit(_Perf, _Grup));
                 deleteButtonRestriccion.appendChild(iconButtonRestriccion);
                 editButtonRestriccion.appendChild(editIconButtonRestriccion);
-
-               
+                //----------------------------------------------------------------
                 IdPerfCell.innerText = tblData[x].Perfil;
                 DescPerfCell.innerText = tblData[x].Desc_Perf;
                 IdGrupoCell.innerText = tblData[x].Grupo;
                 DescGrupoCell.innerText = tblData[x].Desc_Grup;
-              
-
-
-
+                //-----------------------------------------------------------------
                 deleteButtonRestrriccionCell.appendChild(deleteButtonRestriccion);
                 editButtonRestrriccionCell.appendChild(editButtonRestriccion);
                 createCheckboxCell.appendChild(createCheckbox);
-
-
-
-
-
-              
+                //------------------------------------------------------------------
                 row.appendChild(editButtonRestrriccionCell);
                 row.appendChild(IdPerfCell);
                 row.appendChild(inputPerfil);
@@ -281,12 +285,17 @@
         //----------------------------------------------------------------
 
         function deleteButtonClick(Perfil, Grupo) {
-            for (var i = 0; i < data.length; i++) {
-                if (  data[i].Perfil == Perfil && data[i].Grupo == Grupo) {
-                    data.splice(i, 1);
+            if (!btnPressed == 1) {
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i].Perfil == Perfil && data[i].Grupo == Grupo) {
+                        data.splice(i, 1);
+                    }
                 }
+                imprimir();
             }
-            imprimir();
+            else {
+                alert("Esta en modo edición");
+            }
         }
         //-----------------------------------------------------------------
         function editButtonClick(Perfil, Grupo) {
@@ -295,30 +304,47 @@
                     debugger
                     selectDataIndex = i;
                     indexAllowed = data[i].Perfil;
-                    //$("#contentLst").slideUp("slow");
-                    $('#clsOk').append('<button id="btnOk" type="button" class="glyphicon glyphicon-ok btn btn-success pull-left" onclick="Editar()"></button>');
-                    $("#clsOk").slideDown("slow");
-                    document.getElementById("txtSubDesc").focus();
-                    var element = document.getElementById("contentLst");
-                    element.classList.add("lobibox-open");
-                    $('#contentLst').append('<div class="lobibox-backdrop"></div>');
-                
+                    var ddSelected = data[i].grupoId;
+                    $("#ddGrupos").val(ddSelected);
+                    var txtSubVal = data[i].sGrupoTxt;
+                    $("#txtSubG").val(txtSubVal);
+                    $("#txtSubDesc").val(data[i].Desc_Perf);
+                    var checked = data[i].Grupo;
 
+                    if (checked != "checked") {
+                        $("#ckbVigente").removeAttr("checked");
+                    }
+
+                    if (checked == "checked") {
+                        $("#ckbVigente").prop("checked",true);
+                    }
+
+
+                    document.getElementById("txtSubG").focus();
+                    if (btnPressed == 0) {
+                        $('#clsOk').append('<button id="btnOk" type="button" class="glyphicon glyphicon-ok btn btn-success pull-left" onclick="Editar()"></button>');
+                        $("#clsOk").slideDown("slow");
+                        btnPressed = 1;
+                    }
+                   
+
+                    //var element = document.getElementById("contentLst");
+                    //element.classList.add("lobibox-open");
+                    //$('#contentLst').append('<div class="lobibox-backdrop"></div>');
                 }
             }
-            imprimir();
         }
 
         function Editar() {
-            
+            debugger
+
+
             var isChecked;
             if ($('#ckbVigente').is(":checked")) {
                 isChecked = "checked";
             } else {
                 isChecked = "";
             }
-
-
             var grupo = $('#ddGrupos').val();
             var fFinanciamientoId = grupo + $('#txtSubG').val();
 
@@ -326,17 +352,13 @@
                 LobiboxAlert('warning', 'Precaución', 'Seleccione un Perfil.');
             }
             else {
-                cargaDetalleEditado(isChecked, fFinanciamientoId, $('#ddGrupos').val());
-                imprimir();
+                cargaDetalleEditado(isChecked, fFinanciamientoId, $('#ddGrupos').val(), $('#txtSubG').val());
                 $('.ddGrupos-DropDownCls option').eq(0).prop('selected', true);
             }
         }
 
-        function cargaDetalleEditado(isChecked, fFinanciamientoId, grupo) {
-            
-
+        function cargaDetalleEditado(isChecked, fFinanciamientoId, grupo,sGrupo) {
             Desc_Perfil = $('#txtSubDesc').val();
-
 
             var ExisteRestriccion = false;
             $.each(data, function (i, item) {
@@ -346,18 +368,25 @@
             });
 
             debugger
+            if (indexAllowed == fFinanciamientoId) {
+                ExisteRestriccion = false;
+            }
             if ($.isEmptyObject(data) || ExisteRestriccion == false) {
-                        data[selectDataIndex].boton2 = "<button class='btn-info'></button>";
-                        data[selectDataIndex].Perfil = fFinanciamientoId;
-                        data[selectDataIndex].Desc_Perf = Desc_Perfil;
-                        data[selectDataIndex].Grupo = isChecked;
-                        data[selectDataIndex].boton = "<button class='deleteButton' onclick='deleteButtonClick()'>Eliminar</button>";
-                        $("#clsOk").slideUp("slow");
-                        $('#btnOk').remove();
-            }
-            else {
-                alert('Precaución, ' + 'la restricción ya esxiste.');
-            }
+                    data[selectDataIndex].grupoId = grupo,
+                    data[selectDataIndex].sGrupoTxt = sGrupo,
+                    data[selectDataIndex].boton2 = "<button class='btn-info'></button>";
+                    data[selectDataIndex].Perfil = fFinanciamientoId;
+                    data[selectDataIndex].Desc_Perf = Desc_Perfil;
+                    data[selectDataIndex].Grupo = isChecked;
+                    data[selectDataIndex].boton = "<button class='deleteButton' onclick='deleteButtonClick()'>Eliminar</button>";
+                    $("#clsOk").slideUp("slow");
+                    $('#btnOk').remove();
+                    btnPressed = 0;
+                    imprimir();
+                }
+                else {
+                alert('Precaución, ' + 'la restricción ya existe.');
+                }
         };
 
 

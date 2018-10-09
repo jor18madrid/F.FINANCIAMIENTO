@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace F.FINANCIAMIENTO.DTO
 {
-    public class InsertDto
+    public class INSERTDTO
     {
-        public InsertDto() { }
+        public INSERTDTO() { }
 
-        List<LstOfInserts> FuenteFin { get; set; }
+        List<LSTOFINSERT> FuenteFin { get; set; }
     }
 }

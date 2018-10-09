@@ -40,8 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="InsertDto.cs" />
-    <Compile Include="LstOfInserts.cs" />
+    <Compile Include="INSERTDTO.cs" />
+    <Compile Include="LSTOFINSERT.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SAS_GRUPO_FILTRO_DTO.cs" />
   </ItemGroup>
