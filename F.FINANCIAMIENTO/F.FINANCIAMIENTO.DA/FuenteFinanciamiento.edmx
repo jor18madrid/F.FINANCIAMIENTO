@@ -1,0 +1,176 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="ModelFF.Store" Provider="Oracle.ManagedDataAccess.Client" ProviderManifestToken="11.2" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="FUENTES_FINANCIAMIENTO">
+          <Key>
+            <PropertyRef Name="FUENTE" />
+          </Key>
+          <Property Name="FUENTE" Type="number" Precision="2" Scale="0" Nullable="false" />
+          <Property Name="GRUPO_FUENTE" Type="number" Precision="1" Scale="0" Nullable="false" />
+          <Property Name="SUB_GRUPO_FUENTE" Type="number" Precision="2" Scale="0" Nullable="false" />
+          <Property Name="DESC_FUENTE" Type="varchar2" MaxLength="60" Nullable="false" />
+          <Property Name="VIGENTE" Type="varchar2" MaxLength="1" Nullable="false" />
+          <Property Name="API_ESTADO" Type="varchar2" MaxLength="20" Nullable="false" />
+          <Property Name="API_TRANSACCION" Type="varchar2" MaxLength="20" Nullable="false" />
+          <Property Name="USU_CRE" Type="varchar2" MaxLength="30" />
+          <Property Name="FEC_CRE" Type="date" />
+          <Property Name="USU_MOD" Type="varchar2" MaxLength="30" />
+          <Property Name="FEC_MOD" Type="date" />
+        </EntityType>
+        <EntityType Name="GRUPOS_FUENTES_FIN">
+          <Key>
+            <PropertyRef Name="GRUPO_FUENTE" />
+          </Key>
+          <Property Name="GRUPO_FUENTE" Type="number" Precision="1" Scale="0" Nullable="false" />
+          <Property Name="DESC_GRUPO_FUENTE" Type="varchar2" MaxLength="60" Nullable="false" />
+          <Property Name="VIGENTE" Type="varchar2" MaxLength="1" Nullable="false" />
+          <Property Name="API_ESTADO" Type="varchar2" MaxLength="20" />
+          <Property Name="API_TRANSACCION" Type="varchar2" MaxLength="20" />
+          <Property Name="USU_CRE" Type="varchar2" MaxLength="30" />
+          <Property Name="FEC_CRE" Type="date" />
+          <Property Name="USU_MOD" Type="varchar2" MaxLength="30" />
+          <Property Name="FEC_MOD" Type="date" />
+        </EntityType>
+        <Association Name="FFIN_GFFIN_FK">
+          <End Role="GRUPOS_FUENTES_FIN" Type="Self.GRUPOS_FUENTES_FIN" Multiplicity="1" />
+          <End Role="FUENTES_FINANCIAMIENTO" Type="Self.FUENTES_FINANCIAMIENTO" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GRUPOS_FUENTES_FIN">
+              <PropertyRef Name="GRUPO_FUENTE" />
+            </Principal>
+            <Dependent Role="FUENTES_FINANCIAMIENTO">
+              <PropertyRef Name="GRUPO_FUENTE" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ModelFFStoreContainer">
+          <EntitySet Name="FUENTES_FINANCIAMIENTO" EntityType="Self.FUENTES_FINANCIAMIENTO" Schema="USER_TALLERAWS" store:Type="Tables" />
+          <EntitySet Name="GRUPOS_FUENTES_FIN" EntityType="Self.GRUPOS_FUENTES_FIN" Schema="USER_TALLERAWS" store:Type="Tables" />
+          <AssociationSet Name="FFIN_GFFIN_FK" Association="Self.FFIN_GFFIN_FK">
+            <End Role="GRUPOS_FUENTES_FIN" EntitySet="GRUPOS_FUENTES_FIN" />
+            <End Role="FUENTES_FINANCIAMIENTO" EntitySet="FUENTES_FINANCIAMIENTO" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ModelFF" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="FUENTES_FINANCIAMIENTO">
+          <Key>
+            <PropertyRef Name="FUENTE" />
+          </Key>
+          <Property Name="FUENTE" Type="Int16" Nullable="false" />
+          <Property Name="GRUPO_FUENTE" Type="Int16" Nullable="false" />
+          <Property Name="SUB_GRUPO_FUENTE" Type="Int16" Nullable="false" />
+          <Property Name="DESC_FUENTE" Type="String" MaxLength="60" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="VIGENTE" Type="String" MaxLength="1" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="API_ESTADO" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="API_TRANSACCION" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="USU_CRE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="FEC_CRE" Type="DateTime" />
+          <Property Name="USU_MOD" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="FEC_MOD" Type="DateTime" />
+          <NavigationProperty Name="GRUPOS_FUENTES_FIN" Relationship="Self.FFIN_GFFIN_FK" FromRole="FUENTES_FINANCIAMIENTO" ToRole="GRUPOS_FUENTES_FIN" />
+        </EntityType>
+        <EntityType Name="GRUPOS_FUENTES_FIN">
+          <Key>
+            <PropertyRef Name="GRUPO_FUENTE" />
+          </Key>
+          <Property Name="GRUPO_FUENTE" Type="Int16" Nullable="false" />
+          <Property Name="DESC_GRUPO_FUENTE" Type="String" MaxLength="60" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="VIGENTE" Type="String" MaxLength="1" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="API_ESTADO" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="API_TRANSACCION" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="USU_CRE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="FEC_CRE" Type="DateTime" />
+          <Property Name="USU_MOD" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="FEC_MOD" Type="DateTime" />
+          <NavigationProperty Name="FUENTES_FINANCIAMIENTO" Relationship="Self.FFIN_GFFIN_FK" FromRole="GRUPOS_FUENTES_FIN" ToRole="FUENTES_FINANCIAMIENTO" />
+        </EntityType>
+        <Association Name="FFIN_GFFIN_FK">
+          <End Role="GRUPOS_FUENTES_FIN" Type="Self.GRUPOS_FUENTES_FIN" Multiplicity="1" />
+          <End Role="FUENTES_FINANCIAMIENTO" Type="Self.FUENTES_FINANCIAMIENTO" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GRUPOS_FUENTES_FIN">
+              <PropertyRef Name="GRUPO_FUENTE" />
+            </Principal>
+            <Dependent Role="FUENTES_FINANCIAMIENTO">
+              <PropertyRef Name="GRUPO_FUENTE" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="EntitiesFF" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="FUENTES_FINANCIAMIENTO" EntityType="Self.FUENTES_FINANCIAMIENTO" />
+          <EntitySet Name="GRUPOS_FUENTES_FIN" EntityType="Self.GRUPOS_FUENTES_FIN" />
+          <AssociationSet Name="FFIN_GFFIN_FK" Association="Self.FFIN_GFFIN_FK">
+            <End Role="GRUPOS_FUENTES_FIN" EntitySet="GRUPOS_FUENTES_FIN" />
+            <End Role="FUENTES_FINANCIAMIENTO" EntitySet="FUENTES_FINANCIAMIENTO" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ModelFFStoreContainer" CdmEntityContainer="EntitiesFF">
+          <EntitySetMapping Name="FUENTES_FINANCIAMIENTO">
+            <EntityTypeMapping TypeName="ModelFF.FUENTES_FINANCIAMIENTO">
+              <MappingFragment StoreEntitySet="FUENTES_FINANCIAMIENTO">
+                <ScalarProperty Name="FUENTE" ColumnName="FUENTE" />
+                <ScalarProperty Name="GRUPO_FUENTE" ColumnName="GRUPO_FUENTE" />
+                <ScalarProperty Name="SUB_GRUPO_FUENTE" ColumnName="SUB_GRUPO_FUENTE" />
+                <ScalarProperty Name="DESC_FUENTE" ColumnName="DESC_FUENTE" />
+                <ScalarProperty Name="VIGENTE" ColumnName="VIGENTE" />
+                <ScalarProperty Name="API_ESTADO" ColumnName="API_ESTADO" />
+                <ScalarProperty Name="API_TRANSACCION" ColumnName="API_TRANSACCION" />
+                <ScalarProperty Name="USU_CRE" ColumnName="USU_CRE" />
+                <ScalarProperty Name="FEC_CRE" ColumnName="FEC_CRE" />
+                <ScalarProperty Name="USU_MOD" ColumnName="USU_MOD" />
+                <ScalarProperty Name="FEC_MOD" ColumnName="FEC_MOD" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GRUPOS_FUENTES_FIN">
+            <EntityTypeMapping TypeName="ModelFF.GRUPOS_FUENTES_FIN">
+              <MappingFragment StoreEntitySet="GRUPOS_FUENTES_FIN">
+                <ScalarProperty Name="GRUPO_FUENTE" ColumnName="GRUPO_FUENTE" />
+                <ScalarProperty Name="DESC_GRUPO_FUENTE" ColumnName="DESC_GRUPO_FUENTE" />
+                <ScalarProperty Name="VIGENTE" ColumnName="VIGENTE" />
+                <ScalarProperty Name="API_ESTADO" ColumnName="API_ESTADO" />
+                <ScalarProperty Name="API_TRANSACCION" ColumnName="API_TRANSACCION" />
+                <ScalarProperty Name="USU_CRE" ColumnName="USU_CRE" />
+                <ScalarProperty Name="FEC_CRE" ColumnName="FEC_CRE" />
+                <ScalarProperty Name="USU_MOD" ColumnName="USU_MOD" />
+                <ScalarProperty Name="FEC_MOD" ColumnName="FEC_MOD" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

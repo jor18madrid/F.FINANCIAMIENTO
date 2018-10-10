@@ -40,6 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FUENTES_FINANCIAMIENTO_MAPPER.cs" />
+    <Compile Include="GRUPOS_FUENTES_FIN_MAPPER.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SAS_GRUPO_FILTRO_MAPPER.cs" />
   </ItemGroup>

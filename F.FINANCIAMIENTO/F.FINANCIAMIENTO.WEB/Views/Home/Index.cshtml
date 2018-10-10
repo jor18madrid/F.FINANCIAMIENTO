@@ -8,10 +8,15 @@
 <div class="panel-heading">
     &nbsp;
 </div>
+
+
+
+
 <div class="panel panel-default">
 
     @using (Html.BeginForm("GetData", "Home", FormMethod.Get, new { id = "form" }))
     {
+        <input type="text" value="@ViewBag.Result" id="txtResult" hidden />
         <div class="form-horizontal panel-body">
             <br />
             <div class="row">
@@ -48,6 +53,7 @@
             <div class="panel-heading">
                 <div class="panel-body" style="padding:0px;">
                     <button id="addBtn" type="button" class="glyphicon glyphicon-plus btn btn-info pull-right" onclick="Agregar()"></button>
+                    <button id="cargarBtn" type="button" class="glyphicon glyphicon-upload btn btn-info pull-right" onclick="Upload()"></button>
                 </div>
             </div>
             <div class="ChkBrOnly">
@@ -64,6 +70,19 @@
                                 </tr>
                             </thead>
                         </table>
+                        <div id="divTblFF">
+                            <table id="tblFF" class="table table-bordered table-responsive">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>FUENTE</th>
+                                        <th>VIGENTE</th>
+                                        <th>DESCRIPCIÓN</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -74,6 +93,7 @@
             <button id="btnGuardar" type="button" class="glyphicon glyphicon-save btn btn-success btn-lg pull-left"  onclick="Guardar()"></button>
         </div>
     </div>
+
     }
 </div>
 
@@ -84,9 +104,66 @@
 </style>
 
     <script>
+        debugger
         $(document).ready(function () {
+            debugger
+            if ($('#txtResult').val() != "")
+            {
+                if (!$('#txtResult').val().includes("Code:"))
+                {
+                    LobiboxAlert('success', 'Éxito', $('#txtResult').val());
+                }
+                else
+                {
+                    LobiboxAlert('error', 'Error', $('#txtResult').val());
+                }
+            }
             $("#clsOk").slideUp("slow");
         });
+
+
+        function Upload() {
+            debugger
+           
+            $.ajax({
+                url: '/Home/getFFinanciamiento',
+                dataType: "json",
+                type: "GET",
+                contentType: 'application/json; charset=utf-8',
+                async: true,
+                processData: false,
+                cache: false,
+                success: function (data) {
+                    createfFTable(data);
+                },
+                error: function (xhr) {
+                    alert('Error al intentar obtener los datos');
+                }
+            });
+
+        }
+
+      
+
+
+
+
+        function LobiboxAlert(type, title, message) {
+            Lobibox.notify(type, {
+                title: title,
+                size: 'normal',
+                pauseDelayOnHover: true,
+                continueDelayOnInactiveTab: false,
+                closeOnClick: true,
+                rounded: false,
+                position: "top center",
+                icon: true,
+                delayIndicator: true,
+                msg: message
+            });
+        }
+
+        var fDataArray = [];
 
         var data = [];
         var selectDataIndex;
@@ -147,7 +224,6 @@
             
             if ($.isEmptyObject(data) || ExisteRestriccion == false) {
                 data.push({
-
                     grupoId: grupo,
                     sGrupoTxt: sGrupo,
                     boton2: "<button class='btn-info'></button>",
@@ -163,6 +239,193 @@
                 alert('Precaución, '+'la restricción ya esxiste.');
             }
         };
+
+        ///////////////Mandar funcion debajo del document.ready/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        function createfFTable(fData) {
+            debugger
+            var jsonObjectFF = fData;
+
+            for (var i = 0; i < jsonObjectFF.length; i++) {
+                fDataArray.push({
+                    FFGRUPOFFID: jsonObjectFF[i].FUENTE,
+                    FFVIGENTE: jsonObjectFF[i].VIGENTE,
+                    FFDESC: jsonObjectFF[i].DESC_FUENTE
+                });
+            }
+            imprimirFF(fDataArray);
+        }
+        function imprimirFF(fDataArray) {
+            debugger
+            $('#tbTablaFF').remove();
+            if (!$.isEmptyObject(fDataArray)) {
+                document.getElementById("tblFF").appendChild(ToTableFF(fDataArray));
+            }
+            
+            $('#txtSubG').val("");
+            $('#txtSubDesc').val("");
+        };
+
+        function ToTableFF(tblData) {
+            debugger
+            var table2 = document.createElement("tbody");
+            table2.id = "tbTablaFF";
+            table2.className = "table";
+            for (var x = 0; x < tblData.length; x++) {
+                var row = document.createElement("tr");
+                //
+                var IdPerfCell = document.createElement("td");
+                IdPerfCell.width = "150px";
+                //
+                //
+                var DescPerfCell = document.createElement("td");
+                DescPerfCell.width = "800px";
+                //
+                //var IdGrupoCell = document.createElement("td");
+                //var DescGrupoCell = document.createElement("td");
+
+
+                var deleteButtonRestrriccionCell = document.createElement("td");
+                deleteButtonRestrriccionCell.width = "1%";
+                deleteButtonRestrriccionCell.style = "padding: 0px;";
+                var deleteButtonRestriccion = document.createElement("button");
+                var iconButtonRestriccion = document.createElement("i");
+                var att = document.createAttribute("aria-hidden");
+                att.value = true;
+                iconButtonRestriccion.setAttributeNode(att);
+                iconButtonRestriccion.className = "fa fa-times";
+                deleteButtonRestriccion.id = "btnDelete";
+                deleteButtonRestriccion.className = "btn btn-danger";
+                deleteButtonRestriccion.style = "width:100%";
+                //-----------------------------------------------------Boton Edit Original
+                //var editButtonRestrriccionCell = document.createElement("td");
+                //editButtonRestrriccionCell.width = "1%";
+                //var editButtonRestriccion = document.createElement("input");
+                //var editIconButtonRestriccion = document.createElement("i");
+                //var attEdit = document.createAttribute("aria-hidden");
+                //attEdit.value = true;
+                //editIconButtonRestriccion.setAttributeNode(attEdit);
+                //editIconButtonRestriccion.className = "fa fa-pencil-square-o";
+                //editButtonRestriccion.type = "button";
+                //editButtonRestriccion.className = "glyphicon glyphicon-edit btn btn-info";
+                //editButtonRestriccion.style = "width:100%";
+
+                //
+                var editButtonRestrriccionCell = document.createElement("td");
+                editButtonRestrriccionCell.width = "1px";
+                editButtonRestrriccionCell.style = "padding: 0px;";
+                //var editButtonRestriccion = '<button id="btnGuardar" type="button" class="glyphicon glyphicon-edit btn btn-info" style="width: 100%;"></button>';
+                editButtonRestrriccionCell.innerHTML = '<button id="btnEditar" type="button" class="glyphicon glyphicon-edit btn btn-info" style="width:37px; height:34px; display:block; "></button>';
+                //-----------------------------------------------------
+                var createCheckboxCell = document.createElement("td");
+                createCheckboxCell.width = "1px";
+                createCheckboxCell.style = "padding: 0px; text-align: center; vertical-align: middle;";
+                var createCheckbox = document.createElement('input');
+                createCheckbox.type = 'checkbox';
+                var chk;
+                if (tblData[x].FFVIGENTE == "S") {
+                    chk = "checked";
+                }
+                else {
+                    chk = "";
+                }
+                createCheckbox.checked = chk;
+                createCheckbox.setAttribute("readonly", null);
+                createCheckbox.style = 'width:37px; height:25px;';
+
+
+                //-----------------------------------------------------Inputs invisibles
+                //var txtIdGrupo = "FuenteFin[" + x + "].ID_GRUPO";
+                //var txtSubGrupoFuente = "FuenteFin[" + x + "].SUB_GRUPO_FUENTE";
+                //var txtFuenteFin = "FuenteFin[" + x + "].FUENTE_FINANCIAMIENTO";
+                //var txtVigente = "FuenteFin[" + x + "].VIGENTE";
+                //var txtDesc = "FuenteFin[" + x + "].DESC";
+
+
+
+                //var inputGrupo = document.createElement("input");
+                //inputGrupo.id = txtIdGrupo;
+                //inputGrupo.name = txtIdGrupo;
+                //inputGrupo.value = tblData[x].grupoId;
+                //inputGrupo.type = "Hidden";
+
+                //var inputSubGrupo = document.createElement("input");
+                //inputSubGrupo.id = txtSubGrupoFuente;
+                //inputSubGrupo.name = txtSubGrupoFuente;
+                //inputSubGrupo.value = tblData[x].sGrupoTxt;
+                //inputSubGrupo.type = "Hidden";
+
+                //var inputFuenteFin = document.createElement("input");
+                //inputFuenteFin.id = txtFuenteFin;
+                //inputFuenteFin.name = txtFuenteFin;
+                //inputFuenteFin.value = tblData[x].Perfil;
+                //inputFuenteFin.type = "Hidden";
+
+                //var inputVigente = document.createElement("input");
+                //inputVigente.id = txtVigente;
+                //inputVigente.name = txtVigente;
+                //inputVigente.value = tblData[x].Grupo;
+                //inputVigente.type = "Hidden";
+
+                //var inputDesc = document.createElement("input");
+                //inputDesc.id = txtDesc;
+                //inputDesc.name = txtDesc;
+                //inputDesc.value = tblData[x].Desc_Perf;
+                //inputDesc.type = "Hidden";
+
+
+
+
+                var _FFGRUPO = tblData[x].FFGRUPOFFID;
+               
+                ////---------------------------------------------------------------
+                //deleteButtonRestriccion.addEventListener("click", callDelete(_Perf, _Grup));
+                editButtonRestrriccionCell.addEventListener("click", callEditFF(_FFGRUPO));
+                deleteButtonRestriccion.appendChild(iconButtonRestriccion);
+                //editButtonRestriccion.appendChild(editIconButtonRestriccion);
+                //----------------------------------------------------------------
+                IdPerfCell.innerText = tblData[x].FFGRUPOFFID;
+                DescPerfCell.innerText = tblData[x].FFDESC;
+                //IdGrupoCell.innerText = tblData[x].Grupo;
+                //DescGrupoCell.innerText = tblData[x].Desc_Grup;
+                //-----------------------------------------------------------------
+                deleteButtonRestrriccionCell.appendChild(deleteButtonRestriccion);
+                //editButtonRestrriccionCell.appendChild(editButtonRestriccion);
+                createCheckboxCell.appendChild(createCheckbox);
+                //------------------------------------------------------------------
+                row.appendChild(editButtonRestrriccionCell);
+                row.appendChild(IdPerfCell);
+
+                //idgrupo/SubGrupo/Fuentefin
+                //row.appendChild(inputGrupo);
+                //row.appendChild(inputSubGrupo);
+                //row.appendChild(inputFuenteFin);
+                //
+
+                row.appendChild(createCheckboxCell);
+
+                //Vigente
+                //row.appendChild(inputVigente);
+                //
+
+                row.appendChild(DescPerfCell);
+
+                //Desc
+                //row.appendChild(inputDesc);
+                //
+
+                row.appendChild(deleteButtonRestrriccionCell);
+
+
+                table2.appendChild(row);
+            }
+            return table2;
+        }
+        function callEditFF(ID) {
+            return function () {
+                editButtonClickFF(ID);
+            };
+        }
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         function imprimir() {
             $('#tbTabla').remove();
@@ -236,6 +499,7 @@
 
                 //-----------------------------------------------------Inputs invisibles
                 var txtIdGrupo = "FuenteFin[" + x + "].ID_GRUPO";
+                var txtSubGrupoFuente = "FuenteFin[" + x + "].SUB_GRUPO_FUENTE";
                 var txtFuenteFin = "FuenteFin[" + x + "].FUENTE_FINANCIAMIENTO";
                 var txtVigente = "FuenteFin[" + x + "].VIGENTE";
                 var txtDesc = "FuenteFin[" + x + "].DESC";
@@ -247,6 +511,12 @@
                 inputGrupo.name = txtIdGrupo;
                 inputGrupo.value = tblData[x].grupoId;
                 inputGrupo.type = "Hidden";
+
+                var inputSubGrupo = document.createElement("input");
+                inputSubGrupo.id = txtSubGrupoFuente;
+                inputSubGrupo.name = txtSubGrupoFuente;
+                inputSubGrupo.value = tblData[x].sGrupoTxt;
+                inputSubGrupo.type = "Hidden";
 
                 var inputFuenteFin = document.createElement("input");
                 inputFuenteFin.id = txtFuenteFin;
@@ -289,8 +559,9 @@
                 row.appendChild(editButtonRestrriccionCell);
                 row.appendChild(IdPerfCell);
 
-                //idgrupo/Fuentefin
+                //idgrupo/SubGrupo/Fuentefin
                 row.appendChild(inputGrupo);
+                row.appendChild(inputSubGrupo);
                 row.appendChild(inputFuenteFin);
                 //
 
@@ -434,8 +705,4 @@
                 alert('Precaución, ' + 'la restricción ya existe.');
                 }
         };
-
-
-
-
     </script>

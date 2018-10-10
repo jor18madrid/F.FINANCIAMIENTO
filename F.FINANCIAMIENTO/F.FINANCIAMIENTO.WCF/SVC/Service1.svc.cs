@@ -14,6 +14,11 @@ namespace F.FINANCIAMIENTO.WCF.SVC
     // NOTA: para iniciar el Cliente de prueba WCF para probar este servicio, seleccione Service1.svc o Service1.svc.cs en el Explorador de soluciones e inicie la depuración.
     public class Service1 : ISAS_GRUPO_FILTRO_INTERFACE
     {
+        public List<GRUPOS_FUENTES_FIN_DTO> qry_GRUPOS_FUENTES_FIN_Listado()
+        {
+            throw new NotImplementedException();
+        }
+
         public List<SAS_GRUPO_FILTRO_DTO> qry_SAS_GRUPOS_Listado()
         {
             return new SAS_GRUPO_FILTRO_RDN().SAS_GRUPOS_Listado();

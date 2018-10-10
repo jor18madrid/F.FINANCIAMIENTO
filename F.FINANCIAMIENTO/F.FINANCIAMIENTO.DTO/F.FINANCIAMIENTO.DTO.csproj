@@ -40,6 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FUENTES_FINANCIAMIENTO_DTO.cs" />
+    <Compile Include="GRUPOS_FUENTES_FIN_DTO.cs" />
     <Compile Include="INSERTDTO.cs" />
     <Compile Include="LSTOFINSERT.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

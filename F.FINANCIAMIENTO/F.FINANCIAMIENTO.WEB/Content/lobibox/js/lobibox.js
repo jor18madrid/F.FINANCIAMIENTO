@@ -10,7 +10,8 @@ var Lobibox = Lobibox || {};
     //User can set default properties for prompt in the following way
     //Lobibox.prompt.DEFAULT_OPTIONS = object;
     Lobibox.prompt = function (type, options) {
-        return new LobiboxPrompt(type, options);
+         return new LobiboxPrompt(type, options);
+        
     };
     //User can set default properties for confirm in the following way
     //Lobibox.confirm.DEFAULT_OPTIONS = object;
@@ -107,6 +108,7 @@ var Lobibox = Lobibox || {};
             }
             if (me.$options.closeButton) {
                 me._addCloseButton();
+                // me._addOkButton();
             }
             if (me.$options.closeOnEsc) {
                 $(document).on('keyup.lobibox', function (ev) {
@@ -187,9 +189,11 @@ var Lobibox = Lobibox || {};
                     btns.push(btn);
                 }
             }
+            
             return btns;
         },
         _createMarkup: function () {
+            
             var me = this;
             var lobibox = $('<div class="lobibox"></div>');
             lobibox.attr('data-is-modal', me.$options.modal);
@@ -199,14 +203,16 @@ var Lobibox = Lobibox || {};
             var body = $('<div class="lobibox-body"></div>');
             lobibox.append(header);
             lobibox.append(body);
-            if (me.$options.buttons && !$.isEmptyObject(me.$options.buttons)) {
+            // if (me.$options.buttons && !$.isEmptyObject(me.$options.buttons)) {
                 var footer = $('<div class="lobibox-footer"></div>');
-                footer.append(me._generateButtons());
+                // footer.append(me._generateButtons());
+               var buttonOk = $('<input type="button" id="btnSubmit" value="Ok" class="lobibox-btn lobibox-btn-default"  onclick="promptValid()" style="background-color: #555555; color:white";/>');                 
+               footer.append(buttonOk);
                 lobibox.append(footer);
-                if (Lobibox.base.OPTIONS.buttonsAlign.indexOf(me.$options.buttonsAlign) > -1) {
+            //     if (Lobibox.base.OPTIONS.buttonsAlign.indexOf(me.$options.buttonsAlign) > -1) {
                     footer.addClass('text-' + me.$options.buttonsAlign);
-                }
-            }
+            //     }
+            // }
             me.$el = lobibox
                 .addClass(Lobibox.base.OPTIONS.modalClasses[me.$type])
             ;
@@ -266,16 +272,30 @@ var Lobibox = Lobibox || {};
         },
 
         _addCloseButton: function () {
+
             var me = this;
             var closeBtn = $('<span class="btn-close">&times;</span>');
             me.$el.find('.lobibox-header').append(closeBtn);
             closeBtn.on('mousedown', function (ev) {
                 ev.stopPropagation();
             });
+
             closeBtn.on('click.lobibox', function () {
                 me.destroy();
             });
         },
+
+        // _addOkButton:function(){
+        //     var me = this;
+        //     var okBtn = $('<span class="btn-Ok">Ok</span>');
+        //     me.$el.find('.lobibox-footer').append(okBtn);
+        //     okBtn.on('mousedown', function (ev) {
+        //         ev.stopPropagation();
+        //     });
+        //     okBtn.on('click.lobibox', function () {
+        //         me.destroy();
+        //     });
+        // },
         _position: function () {
             var me = this;
 
@@ -393,6 +413,7 @@ var Lobibox = Lobibox || {};
          * @returns {LobiboxBase}
          */
         destroy: function () {
+            
             var me = this;
             me._beforeClose();
             if (me.$options.hideClass) {
@@ -400,10 +421,13 @@ var Lobibox = Lobibox || {};
                 setTimeout(function () {
                     callback();
                 }, me.$options.delayToRemove);
-            } else {
+            } 
+            else 
+            {
                 callback();
             }
-            function callback() {
+            function callback()
+             {
                 me.$el.remove();
                 if ($('.lobibox[data-is-modal=true]').length === 0) {
                     $('.lobibox-backdrop').remove();
@@ -431,7 +455,8 @@ var Lobibox = Lobibox || {};
             this.setWidth(this.$el.width());
         },
 
-        refreshHeight: function(){
+        refreshHeight: function()
+        {
             this.setHeight(this.$el.height());
         },
 
@@ -492,7 +517,6 @@ var Lobibox = Lobibox || {};
         setTitle: function (title) {
             return this.$el.find('.lobibox-title').html(title);
         },
-
         /**
          * Get the title of messagebox
          *
@@ -500,6 +524,11 @@ var Lobibox = Lobibox || {};
          */
         getTitle: function () {
             return this.$el.find('.lobibox-title').html();
+        },
+         setMask:function(){
+            
+            $('#txtPrompt').inputmask( "a{1,20}",{"placeholder": ""});
+            // $("#date").inputmask("99/99/9999",{ "placeholder": "*" });
         },
 
         /**
@@ -529,6 +558,7 @@ var Lobibox = Lobibox || {};
                 }, me.$options.delay);
             }
             me._afterShow();
+            me.setMask();
             return me;
         }
     };
@@ -536,6 +566,8 @@ var Lobibox = Lobibox || {};
     Lobibox.base = {};
     Lobibox.base.OPTIONS = {
         bodyClass: 'lobibox-open',
+
+        
 
         modalClasses: {
             'error': 'lobibox-error',
@@ -552,7 +584,7 @@ var Lobibox = Lobibox || {};
         buttons: {
             ok: {
                 'class': 'lobibox-btn lobibox-btn-default',
-                text: 'OK',
+                text: 'Ok',
                 closeOnClick: true
             },
             cancel: {
@@ -594,11 +626,11 @@ var Lobibox = Lobibox || {};
         width: 600,
         height: 'auto',                     // Height is automatically calculated by width
         closeButton: true,                  // Show close button or not
-        draggable: false,                   // Make messagebox draggable
+        draggable: true,                    // Make messagebox draggable
         customBtnClass: 'lobibox-btn lobibox-btn-default', // Class for custom buttons
         modal: true,
         debug: false,
-        buttonsAlign: 'center',             // Position where buttons should be aligned
+        buttonsAlign: 'left',             // Position where buttons should be aligned
         closeOnEsc: true,                   // Close messagebox on Esc press
         delayToRemove: 200,                 // Time after which lobibox will be removed after remove call. (This option is for hide animation to finish)
         delay: false,                       // Time to remove lobibox after shown
@@ -612,7 +644,7 @@ var Lobibox = Lobibox || {};
         onShow: null,
         //After messagebox is shown
         shown: null,
-        //When messagebox remove method is called but before it is actually hidden
+        //When messagebox remove method i.....s called but before it is actually hidden
         beforeClose: null,
         //After messagebox is hidden
         closed: null
@@ -628,8 +660,9 @@ var Lobibox = Lobibox || {};
         options = $.extend({}, Lobibox.prompt.DEFAULT_OPTIONS, options);
 
         this.$options = this._processInput(options);
-
+        
         this._init();
+        // this.setMask();
         this.debug(this);
     }
 
@@ -640,10 +673,10 @@ var Lobibox = Lobibox || {};
             var me = this;
 
             var mergedOptions = LobiboxBase._processInput.call(me, options);
-            mergedOptions.buttons = {
-                ok: Lobibox.base.OPTIONS.buttons.ok,
-                cancel: Lobibox.base.OPTIONS.buttons.cancel
-            };
+            // mergedOptions.buttons = {
+            //     // ok: Lobibox.base.OPTIONS.buttons.ok,
+            //     // cancel: Lobibox.base.OPTIONS.buttons.cancel
+            // };
             options = $.extend({}, mergedOptions, LobiboxPrompt.DEFAULT_OPTIONS, options);
             return options;
         },
@@ -662,12 +695,15 @@ var Lobibox = Lobibox || {};
         },
 
         _createInput: function () {
+            
             var me = this,
                 label;
+                // ,input;
             if (me.$options.multiline) {
                 me.$input = $('<textarea></textarea>').attr('rows', me.$options.lines);
             } else {
                 me.$input = $('<input type="' + me.$promptType + '"/>');
+              
             }
             me.$input.addClass('lobibox-input').attr(me.$options.attrs);
             if (me.$options.value) {
@@ -676,9 +712,35 @@ var Lobibox = Lobibox || {};
             if (me.$options.label) {
                 label = $('<label>' + me.$options.label + '</label>');
             }
-            return $('<div></div>').append(label, me.$input);
+                //  input = $('<br><br><input type="button" id="btnSubmit" value="Ok" class="lobibox-btn lobibox-btn-default"  onclick="promptValid()" style="background-color: #555555; color:white";/>');                 
+                // me.setMask();
+                return $('<div></div>').append(label, me.$input);// ,input
         },
-
+        
+        ///////////////////////////////////////////////////////////////////////////////////////////footer
+        // _createMarkup: function () {
+        //     var me = this;
+        //     var lobibox = $('<div class="lobibox"></div>');
+        //     lobibox.attr('data-is-modal', me.$options.modal);
+        //     var header = $('<div class="lobibox-header"></div>')
+        //         .append('<span class="lobibox-title"></span>')
+        //         ;
+        //     var body = $('<div class="lobibox-body"></div>');
+        //     lobibox.append(header);
+        //     lobibox.append(body);
+        //     if (me.$options.buttons && !$.isEmptyObject(me.$options.buttons)) {
+        //         var footer = $('<div class="lobibox-footer"></div>');
+        //         footer.append(me._generateButtons());
+        //         lobibox.append(footer);
+        //         if (Lobibox.base.OPTIONS.buttonsAlign.indexOf(me.$options.buttonsAlign) > -1) {
+        //             footer.addClass('text-' + me.$options.buttonsAlign);
+        //         }
+        //     }
+        //     me.$el = lobibox
+        //         .addClass(Lobibox.base.OPTIONS.modalClasses[me.$type])
+        //     ;
+        // },
+                ///////////////////////////////////////////////////////////////////////////////////////////footer
         /**
          * Set value of input
          *
@@ -716,7 +778,6 @@ var Lobibox = Lobibox || {};
             $error.remove();
             me._position();
             me.$input.focus();
-
             return true;
         }
     });
@@ -727,7 +788,7 @@ var Lobibox = Lobibox || {};
         value: '',          // Value which is given to textfield when messagebox is created
         multiline: false,   // Set this true for multiline prompt
         lines: 3,           // This works only for multiline prompt. Number of lines
-        type: 'text',       // Prompt type. Available types (text|number|color)
+        // type: 'text',       // Prompt type. Available types (text|number|color)
         label: '',          // Set some text which will be shown exactly on top of textfield
         required: true,
         errorMessage: 'The field is required'
@@ -766,7 +827,7 @@ var Lobibox = Lobibox || {};
             LobiboxBase._init.call(me);
             me.show();
         },
-
+       
         _afterShow: function () {
             var me = this;
 

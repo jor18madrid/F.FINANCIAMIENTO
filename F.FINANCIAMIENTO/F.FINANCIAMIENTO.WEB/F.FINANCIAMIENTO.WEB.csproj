@@ -203,6 +203,10 @@
       <Project>{9eb90192-a37e-4d46-aaea-984d33aa2adf}</Project>
       <Name>F.FINANCIAMIENTO.INTERFACE</Name>
     </ProjectReference>
+    <ProjectReference Include="..\F.FINANCIAMIENTO.WCF\F.FINANCIAMIENTO.WCF.csproj">
+      <Project>{6B98C4D8-AA29-4486-9D7B-99D9AA1E2189}</Project>
+      <Name>F.FINANCIAMIENTO.WCF</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

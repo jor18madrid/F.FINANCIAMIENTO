@@ -51,6 +51,27 @@
     <Compile Include="CG_REF_CODES.cs">
       <DependentUpon>SAS.tt</DependentUpon>
     </Compile>
+    <Compile Include="FuenteFinanciamiento.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FuenteFinanciamiento.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FuenteFinanciamiento.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FuenteFinanciamiento.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FuenteFinanciamiento.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FuenteFinanciamiento.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="FUENTES_FINANCIAMIENTO.cs">
+      <DependentUpon>FuenteFinanciamiento.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GRUPOS_FUENTES_FIN.cs">
+      <DependentUpon>FuenteFinanciamiento.tt</DependentUpon>
+    </Compile>
     <Compile Include="MENSAJES_DE_ERROR.cs">
       <DependentUpon>SAS.tt</DependentUpon>
     </Compile>
@@ -229,12 +250,29 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.Config" />
+    <EntityDeploy Include="FuenteFinanciamiento.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>FuenteFinanciamiento.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="FuenteFinanciamiento.edmx.diagram">
+      <DependentUpon>FuenteFinanciamiento.edmx</DependentUpon>
+    </None>
     <None Include="packages.config" />
     <None Include="SAS.edmx.diagram">
       <DependentUpon>SAS.edmx</DependentUpon>
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="FuenteFinanciamiento.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>FuenteFinanciamiento.edmx</DependentUpon>
+      <LastGenOutput>FuenteFinanciamiento.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="FuenteFinanciamiento.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>FuenteFinanciamiento.edmx</DependentUpon>
+      <LastGenOutput>FuenteFinanciamiento.cs</LastGenOutput>
+    </Content>
     <Content Include="SAS.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>SAS.edmx</DependentUpon>

@@ -11,5 +11,11 @@ namespace F.FINANCIAMIENTO.INTERFACES
     {
         [OperationContract]
         List<SAS_GRUPO_FILTRO_DTO> qry_SAS_GRUPOS_Listado();
+
+        [OperationContract]
+        List<GRUPOS_FUENTES_FIN_DTO> qry_GRUPOS_FUENTES_FIN_Listado();
+
+        [OperationContract]
+        List<FUENTES_FINANCIAMIENTO_DTO> qry_FUENTES_FINANCIAMIENTO_Listado();
     }
 }
