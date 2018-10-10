@@ -38,8 +38,7 @@ namespace F.FINANCIAMIENTO.WEB.Controllers
 
         public ActionResult GetData(INSERTDTO data)
         {
-
-            return View("Index");
+            return RedirectToAction("Index");
         }
 
 

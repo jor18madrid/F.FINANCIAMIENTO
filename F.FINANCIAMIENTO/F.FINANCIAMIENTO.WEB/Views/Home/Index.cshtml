@@ -18,7 +18,7 @@
                 <div class="form-group col-lg-12">
                     <div class="col-sm-3">
                         <label> GRUPO </label>
-                        @Html.DropDownList("dd",(IEnumerable<SelectListItem>)ViewBag.Grupos, new { id = "ddGrupos", @class = "form-control" })
+                        @Html.DropDownList("DdLst",(IEnumerable<SelectListItem>)ViewBag.Grupos,new { id = "ddGrupos", @class = "form-control" })
                     </div>
 
                     <div class="col-sm-3">
@@ -36,7 +36,7 @@
                     </div>
                     <div class="col-sm-3">
                         <label>DESCRIPCIÓN</label>
-                        @Html.TextBox("txtSubDesc", "", new { id = "txtSubDesc", type = "text", @class = "form-control" })
+                        @Html.TextBox("txtSubDesc", "", new { id = "txtSubDesc", type = "text", @class = "form-control" ,style ="width:800px; max-width:1000px;"})
                     </div>
                 </div>
             </div>
@@ -46,8 +46,9 @@
     <div id="contentLst">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <button id="addBtn" type="button" class="glyphicon glyphicon-plus btn btn-info pull-right" onclick="Agregar()"></button>
-                <span>&nbsp;</span>
+                <div class="panel-body" style="padding:0px;">
+                    <button id="addBtn" type="button" class="glyphicon glyphicon-plus btn btn-info pull-right" onclick="Agregar()"></button>
+                </div>
             </div>
             <div class="ChkBrOnly">
                 <div class="panel-body">
@@ -58,7 +59,7 @@
                                     <th></th>
                                     <th>FUENTE</th>
                                     <th>VIGENTE</th>
-                                    <th>DESC</th>
+                                    <th>DESCRIPCIÓN</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -85,7 +86,6 @@
     <script>
         $(document).ready(function () {
             $("#clsOk").slideUp("slow");
-            //$("#pFooter").slideUp("slow");
         });
 
         var data = [];
@@ -201,6 +201,7 @@
                 att.value = true;
                 iconButtonRestriccion.setAttributeNode(att);
                 iconButtonRestriccion.className = "fa fa-times";
+                deleteButtonRestriccion.id = "btnDelete";
                 deleteButtonRestriccion.className = "btn btn-danger";
                 deleteButtonRestriccion.style = "width:100%";
                 //-----------------------------------------------------Boton Edit Original
@@ -221,7 +222,7 @@
                 editButtonRestrriccionCell.width = "1px";
                 editButtonRestrriccionCell.style = "padding: 0px;";
                 //var editButtonRestriccion = '<button id="btnGuardar" type="button" class="glyphicon glyphicon-edit btn btn-info" style="width: 100%;"></button>';
-                editButtonRestrriccionCell.innerHTML = '<button id="btnGuardar" type="button" class="glyphicon glyphicon-edit btn btn-info" style="width:37px; height:34px; display:block; "></button>';
+                editButtonRestrriccionCell.innerHTML = '<button id="btnEditar" type="button" class="glyphicon glyphicon-edit btn btn-info" style="width:37px; height:34px; display:block; "></button>';
                 //-----------------------------------------------------
                 var createCheckboxCell = document.createElement("td");
                 createCheckboxCell.width = "1px";
@@ -233,15 +234,11 @@
                 createCheckbox.style = 'width:37px; height:25px;';
 
 
-                //-----------------------------------------------------
+                //-----------------------------------------------------Inputs invisibles
                 var txtIdGrupo = "FuenteFin[" + x + "].ID_GRUPO";
-                //var IdGrupo = "Perfiles_Grupos_" + x + "__ID_GRUPO";
                 var txtFuenteFin = "FuenteFin[" + x + "].FUENTE_FINANCIAMIENTO";
-                //var idNgrupo = "Perfiles_Grupos_" + x + "__NOMBRE_PERFIL";
                 var txtVigente = "FuenteFin[" + x + "].VIGENTE";
-                //var idNperfil = "Perfiles_Grupos_" + x + "__NOMBRE_PERFIL";
                 var txtDesc = "FuenteFin[" + x + "].DESC";
-                //var IdPerfil = "Perfiles_Grupos_" + x + "__ID_PERFIL";
 
               
 
@@ -369,6 +366,9 @@
 
                     document.getElementById("txtSubG").focus();
                     if (btnPressed == 0) {
+                        $('[id="btnDelete"]').prop("disabled", true);
+                        $('#addBtn').prop("disabled", true);
+                        $('#btnGuardar').prop("disabled", true);
                         $('#clsOk').append('<button id="btnOk" type="button" class="glyphicon glyphicon-ok btn btn-success pull-left" onclick="Editar()"></button>');
                         $("#clsOk").slideDown("slow");
                         btnPressed = 1;
@@ -426,6 +426,8 @@
                     $("#clsOk").slideUp("slow");
                     $('#btnOk').remove();
                     btnPressed = 0;
+                    $('#addBtn').removeAttr('disabled');
+                    $('#btnGuardar').removeAttr('disabled');
                     imprimir();
                 }
                 else {
