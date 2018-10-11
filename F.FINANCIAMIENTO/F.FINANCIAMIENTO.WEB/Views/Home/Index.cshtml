@@ -187,7 +187,7 @@
                 if ($('#ckbVigente').is(":checked")) {
                     isChecked = "checked";
                 } else {
-                    isChecked = "";
+                    isChecked = "N";
                 }
 
 
@@ -243,6 +243,7 @@
         ///////////////Mandar funcion debajo del document.ready/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         function createfFTable(fData) {
             debugger
+            fDataArray = [];
             var jsonObjectFF = fData;
 
             for (var i = 0; i < jsonObjectFF.length; i++) {
@@ -425,6 +426,85 @@
                 editButtonClickFF(ID);
             };
         }
+        function editButtonClickFF(FFGRUPOFFID) {
+            for (var i = 0; i < fDataArray.length; i++) {
+                if (fDataArray[i].FFGRUPOFFID == FFGRUPOFFID) {
+                    debugger
+
+                    selectDataIndex = i;
+                    indexAllowed = fDataArray[i].FFGRUPOFFID;
+
+                    //var ddSelected = fDataArray[i].grupoId;
+                    //$("#ddGrupos").val(ddSelected);
+
+                    //var txtSubVal = fDataArray[i].sGrupoTxt;
+                    //$("#txtSubG").val(txtSubVal);
+                    //var isCheckedFF;
+                    //if ($('#ckbVigente').is(":checked"))
+                    //{
+                    //    isChecked = "checked";
+
+                    //} else {
+                    //    isChecked = "";
+                    //}
+
+
+
+
+                    $("#txtSubDesc").val(fDataArray[i].FFDESC);
+                    var checkedFF = fDataArray[i].FFVIGENTE;
+
+
+
+
+                    if (checkedFF != "S") {
+                        $("#ckbVigente").removeAttr("checked");
+                    }
+
+                    if (checkedFF == "S") {
+                        $("#ckbVigente").prop("checked", true);
+                    }
+
+
+
+                    document.getElementById("txtSubG").focus();
+                    if (btnPressed == 0) {
+                        $('[id="btnDelete"]').prop("disabled", true);
+                        $('#addBtn').prop("disabled", true);
+                        $('#btnGuardar').prop("disabled", true);
+                        $('#clsOk').append('<button id="btnOkFF" type="button" class="glyphicon glyphicon-ok btn btn-success pull-left" onclick="EditarFF()"></button>');
+                        $("#clsOk").slideDown("slow");
+                        btnPressed = 1;
+                    }
+
+                }
+
+            }
+        }
+
+        function EditarFF() {
+            debugger
+
+
+            var isChecked;
+            if ($('#ckbVigente').is(":checked")) {
+                isChecked = "checked";
+            } else {
+                isChecked = "";
+            }
+            var grupo = $('#ddGrupos').val();
+            var fFinanciamientoId = grupo + $('#txtSubG').val();
+
+            if ($('#ckbVigente').val() == "") {
+                LobiboxAlert('warning', 'Precaución', 'Seleccione un Perfil.');
+            }
+            else {
+                cargaDetalleEditado(isChecked, fFinanciamientoId, $('#ddGrupos').val(), $('#txtSubG').val());
+                $('.ddGrupos-DropDownCls option').eq(0).prop('selected', true);
+            }
+        }
+
+
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         function imprimir() {
@@ -492,7 +572,16 @@
                 createCheckboxCell.style = "padding: 0px; text-align: center; vertical-align: middle;";
                 var createCheckbox = document.createElement('input');
                 createCheckbox.type = 'checkbox';
-                createCheckbox.checked = tblData[x].Grupo;
+                var chk;
+                if (tblData[x].Grupo == "checked") {
+                    chk = "checked";
+                }
+                else {
+                    chk = "";
+                }
+
+
+                createCheckbox.checked = chk;
                 createCheckbox.setAttribute("readonly",null);
                 createCheckbox.style = 'width:37px; height:25px;';
 
@@ -632,7 +721,7 @@
                     }
 
                     if (checked == "checked") {
-                        $("#ckbVigente").prop("checked",true);
+                        $("#ckbVigente").prop("checked", true);
                     }
 
                     document.getElementById("txtSubG").focus();
