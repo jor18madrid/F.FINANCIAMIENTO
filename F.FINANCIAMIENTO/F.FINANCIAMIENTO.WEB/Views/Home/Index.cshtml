@@ -164,11 +164,12 @@
         }
 
         var fDataArray = [];
-
         var data = [];
         var selectDataIndex;
         var indexAllowed;
         var btnPressed = 0;
+        var selectDataIndexFF;
+        var indexAllowedFF;
 
         function Guardar() {
             if(data.length <= 0)
@@ -248,9 +249,11 @@
 
             for (var i = 0; i < jsonObjectFF.length; i++) {
                 fDataArray.push({
+                    FFBTNEDIT:"",
                     FFGRUPOFFID: jsonObjectFF[i].FUENTE,
                     FFVIGENTE: jsonObjectFF[i].VIGENTE,
-                    FFDESC: jsonObjectFF[i].DESC_FUENTE
+                    FFDESC: jsonObjectFF[i].DESC_FUENTE,
+                    FFUPD: "",
                 });
             }
             imprimirFF(fDataArray);
@@ -431,31 +434,13 @@
                 if (fDataArray[i].FFGRUPOFFID == FFGRUPOFFID) {
                     debugger
 
-                    selectDataIndex = i;
-                    indexAllowed = fDataArray[i].FFGRUPOFFID;
+                    selectDataIndexFF = i;
+                    indexAllowedFF = fDataArray[i].FFGRUPOFFID;
 
-                    //var ddSelected = fDataArray[i].grupoId;
-                    //$("#ddGrupos").val(ddSelected);
-
-                    //var txtSubVal = fDataArray[i].sGrupoTxt;
-                    //$("#txtSubG").val(txtSubVal);
-                    //var isCheckedFF;
-                    //if ($('#ckbVigente').is(":checked"))
-                    //{
-                    //    isChecked = "checked";
-
-                    //} else {
-                    //    isChecked = "";
-                    //}
-
-
-
+                   //Solo se tiene que guardar VIGENTE y DESCRIPCION
 
                     $("#txtSubDesc").val(fDataArray[i].FFDESC);
                     var checkedFF = fDataArray[i].FFVIGENTE;
-
-
-
 
                     if (checkedFF != "S") {
                         $("#ckbVigente").removeAttr("checked");
@@ -470,6 +455,8 @@
                     document.getElementById("txtSubG").focus();
                     if (btnPressed == 0) {
                         $('[id="btnDelete"]').prop("disabled", true);
+                        $('#txtSubG').prop("disabled", true);
+                        $('#ddGrupos').prop("disabled", true);
                         $('#addBtn').prop("disabled", true);
                         $('#btnGuardar').prop("disabled", true);
                         $('#clsOk').append('<button id="btnOkFF" type="button" class="glyphicon glyphicon-ok btn btn-success pull-left" onclick="EditarFF()"></button>');
@@ -484,26 +471,64 @@
 
         function EditarFF() {
             debugger
-
-
             var isChecked;
             if ($('#ckbVigente').is(":checked")) {
                 isChecked = "checked";
             } else {
                 isChecked = "";
             }
-            var grupo = $('#ddGrupos').val();
-            var fFinanciamientoId = grupo + $('#txtSubG').val();
+            var descFF = $('#txtSubDesc').val();
+            //var grupo = $('#ddGrupos').val();
+            //var fFinanciamientoId = grupo + $('#txtSubG').val();
 
-            if ($('#ckbVigente').val() == "") {
-                LobiboxAlert('warning', 'Precaución', 'Seleccione un Perfil.');
+            if (descFF == "") {
+                LobiboxAlert('warning', 'Precaución', 'Escriba una descripción.');
             }
             else {
-                cargaDetalleEditado(isChecked, fFinanciamientoId, $('#ddGrupos').val(), $('#txtSubG').val());
+                cargaDetalleEditadoFF(isChecked, descFF);
                 $('.ddGrupos-DropDownCls option').eq(0).prop('selected', true);
             }
         }
 
+        function cargaDetalleEditadoFF(isChecked, descFF) {
+            //var ExisteRestriccion = false;
+            //$.each(data, function (i, item) {
+            //    if (item.Perfil == fFinanciamientoId) {
+            //        ExisteRestriccion = true;
+            //    }
+            //});
+
+            debugger
+            //if (indexAllowedFF == fFinanciamientoId) {
+            //    ExisteRestriccion = false;
+            //}
+            //if ($.isEmptyObject(fDataArray) /*|| ExisteRestriccion == false*/) {
+                
+                fDataArray[selectDataIndexFF].FFBTNEDIT = "";
+                var chk;
+                if (isChecked == "checked") {
+                    chk = "S";
+                }
+                else {
+                    chk = "N";
+                }
+                fDataArray[selectDataIndexFF].FFVIGENTE = chk;
+                fDataArray[selectDataIndexFF].FFDESC = descFF;
+                fDataArray[selectDataIndexFF].FFUPD = "S";
+
+                $("#clsOk").slideUp("slow");
+                $('#btnOk').remove();
+                btnPressed = 0;
+                $('#addBtn').removeAttr('disabled');
+                $('#btnGuardar').removeAttr('disabled');
+                $('#txtSubG').removeAttr('disabled');
+                $('#ddGrupos').removeAttr('disabled');
+                imprimirFF();
+            //}
+            //else {
+            //    alert('Precaución, ' + 'la restricción ya existe.');
+            //}
+        };
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
