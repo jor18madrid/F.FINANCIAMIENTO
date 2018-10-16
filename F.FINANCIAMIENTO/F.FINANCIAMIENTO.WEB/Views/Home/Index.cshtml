@@ -517,13 +517,13 @@
                 fDataArray[selectDataIndexFF].FFUPD = "S";
 
                 $("#clsOk").slideUp("slow");
-                $('#btnOk').remove();
+                $('#btnOkFF').remove();
                 btnPressed = 0;
                 $('#addBtn').removeAttr('disabled');
                 $('#btnGuardar').removeAttr('disabled');
                 $('#txtSubG').removeAttr('disabled');
                 $('#ddGrupos').removeAttr('disabled');
-                imprimirFF();
+                imprimirFF(fDataArray);
             //}
             //else {
             //    alert('Precaución, ' + 'la restricción ya existe.');
