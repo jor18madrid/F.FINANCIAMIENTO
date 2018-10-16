@@ -143,11 +143,6 @@
 
         }
 
-      
-
-
-
-
         function LobiboxAlert(type, title, message) {
             Lobibox.notify(type, {
                 title: title,
@@ -254,6 +249,7 @@
                     FFVIGENTE: jsonObjectFF[i].VIGENTE,
                     FFDESC: jsonObjectFF[i].DESC_FUENTE,
                     FFUPD: "",
+                    FFNUPD:"",
                 });
             }
             imprimirFF(fDataArray);
@@ -296,24 +292,23 @@
                 var att = document.createAttribute("aria-hidden");
                 att.value = true;
                 iconButtonRestriccion.setAttributeNode(att);
-                iconButtonRestriccion.className = "fa fa-times";
+                var icoClassName;
+                var btnClassName;
+                if (tblData[x].FFNUPD == "S") {
+                    icoClassName = "fa fa-refresh";
+                    btnClassName = "btn btn-warning";
+                }
+                else {
+                    icoClassName = "fa fa-thumbs-o-up";
+                    btnClassName = "btn";
+                }
+                iconButtonRestriccion.className = icoClassName;
                 deleteButtonRestriccion.id = "btnDelete";
-                deleteButtonRestriccion.className = "btn btn-danger";
-                deleteButtonRestriccion.style = "width:100%";
-                //-----------------------------------------------------Boton Edit Original
-                //var editButtonRestrriccionCell = document.createElement("td");
-                //editButtonRestrriccionCell.width = "1%";
-                //var editButtonRestriccion = document.createElement("input");
-                //var editIconButtonRestriccion = document.createElement("i");
-                //var attEdit = document.createAttribute("aria-hidden");
-                //attEdit.value = true;
-                //editIconButtonRestriccion.setAttributeNode(attEdit);
-                //editIconButtonRestriccion.className = "fa fa-pencil-square-o";
-                //editButtonRestriccion.type = "button";
-                //editButtonRestriccion.className = "glyphicon glyphicon-edit btn btn-info";
-                //editButtonRestriccion.style = "width:100%";
 
-                //
+                deleteButtonRestriccion.className = btnClassName;
+                deleteButtonRestriccion.style = "width:100%";
+               
+
                 var editButtonRestrriccionCell = document.createElement("td");
                 editButtonRestrriccionCell.width = "1px";
                 editButtonRestrriccionCell.style = "padding: 0px;";
@@ -515,6 +510,7 @@
                 fDataArray[selectDataIndexFF].FFVIGENTE = chk;
                 fDataArray[selectDataIndexFF].FFDESC = descFF;
                 fDataArray[selectDataIndexFF].FFUPD = "S";
+                fDataArray[selectDataIndexFF].FFNUPD = "S";
 
                 $("#clsOk").slideUp("slow");
                 $('#btnOkFF').remove();
@@ -572,6 +568,10 @@
                 deleteButtonRestriccion.id = "btnDelete";
                 deleteButtonRestriccion.className = "btn btn-danger";
                 deleteButtonRestriccion.style = "width:100%";
+
+
+
+
                 //-----------------------------------------------------Boton Edit Original
                 //var editButtonRestrriccionCell = document.createElement("td");
                 //editButtonRestrriccionCell.width = "1%";
