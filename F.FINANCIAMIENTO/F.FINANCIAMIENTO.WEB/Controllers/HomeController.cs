@@ -42,11 +42,26 @@ namespace F.FINANCIAMIENTO.WEB.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetData(INSERTDTO data)
+        public ActionResult GetData(INSERTDTO data/*,UPDATEDTO updData*/)
         {
+
+            //var nUpd = updData.FuenteFinUpd.Where(x => x.FFNUPD == "S").OrderBy(y => y.FUENTEFUPD);
+
             ExecuteQuery.result = ExecuteQuery.Execute(data);
             return RedirectToAction("Index");
         }
+
+        [HttpPost]
+        public ActionResult Update(INSERTDTO data/*,UPDATEDTO updData*/)
+        {
+
+            //var nUpd = updData.FuenteFinUpd.Where(x => x.FFNUPD == "S").OrderBy(y => y.FUENTEFUPD);
+
+            ExecuteQuery.result = ExecuteQuery.Execute(data);
+            return RedirectToAction("Index");
+        }
+
+
 
         [HttpGet]
         public JsonResult getFFinanciamiento()

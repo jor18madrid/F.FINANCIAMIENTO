@@ -14,7 +14,7 @@
 
 <div class="panel panel-default">
 
-    @using (Html.BeginForm("GetData", "Home", FormMethod.Get, new { id = "form" }))
+    @using (Html.BeginForm("GetData", "Home", FormMethod.Post, new { id = "form" }))
     {
         <input type="text" value="@ViewBag.Result" id="txtResult" hidden />
         <div class="form-horizontal panel-body">
@@ -48,52 +48,73 @@
             <div id="clsOk"></div>
         </div>
 
-    <div id="contentLst">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <div class="panel-body" style="padding:0px;">
-                    <button id="addBtn" type="button" class="glyphicon glyphicon-plus btn btn-info pull-right" onclick="Agregar()"></button>
-                    <button id="cargarBtn" type="button" class="glyphicon glyphicon-upload btn btn-info pull-right" onclick="Upload()"></button>
-                </div>
-            </div>
-            <div class="ChkBrOnly">
-                <div class="panel-body">
-                    <div class="form-group">
-                        <table id="tblPerfGrup" class="table table-bordered table-responsive">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>FUENTE</th>
-                                    <th>VIGENTE</th>
-                                    <th>DESCRIPCIÓN</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                        </table>
-                        <div id="divTblFF">
-                            <table id="tblFF" class="table table-bordered table-responsive">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>FUENTE</th>
-                                        <th>VIGENTE</th>
-                                        <th>DESCRIPCIÓN</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                            </table>
+        <div id="contentLst">
+            <div class="panel panel-default">
+               
+                    <div class="panel-heading" style="padding:0px;">
+                        <div id="panel-bodyFF" class="panel-body" style="padding:0px;">
+                            <button id="addBtn" type="button" class="glyphicon glyphicon-plus btn btn-info pull-right" onclick="Agregar()"></button>
+                        </div>
+                    </div>
+                <div id="slideToggleFF">
+                    <div class="ChkBrOnly">
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <table id="tblPerfGrup" class="table table-bordered table-responsive">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>FUENTE</th>
+                                            <th>VIGENTE</th>
+                                            <th>DESCRIPCIÓN</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="pFooter" class="panel-footer">
+                        <div id="pBodyFooter" class="panel-body" style="padding:0px;">
+                            <button id="btnGuardar" type="button" class="glyphicon glyphicon-save btn btn-success btn-lg pull-left" onclick="Guardar()"></button>
                         </div>
                     </div>
                 </div>
+                </div>
+            <div class="panel panel-default">
+                <div class="panel-heading" style="padding:0px;">
+                    <div id="panel-bodyFFUPD" class="panel-body" style="padding:0px;">
+                        <button id="cargarBtn" type="button" class="glyphicon glyphicon-upload btn btn-info pull-right" onclick="Upload()"></button>
+                    </div>
+                </div>
+                <div id="slideToggleFFUPD">
+                    <div class="ChkBrOnly">
+                        <div id="divTblFF">
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <table id="tblFF" class="table table-bordered table-responsive">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>FUENTE</th>
+                                                <th>VIGENTE</th>
+                                                <th>DESCRIPCIÓN</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    </div>
             </div>
-        </div>
-    </div>
     <div id="pFooter" class="panel-footer">
         <div id="pBodyFooter" class="panel-body" style="padding:0px;">
-            <button id="btnGuardar" type="button" class="glyphicon glyphicon-save btn btn-success btn-lg pull-left"  onclick="Guardar()"></button>
+            <button id="btnGuardar" type="button" class="glyphicon glyphicon-refresh btn btn-success btn-lg pull-left"  onclick="Update()"></button>
         </div>
     </div>
-
     }
 </div>
 
@@ -101,6 +122,7 @@
        .ChkBrOnly input[type="checkbox"][readonly] {
         pointer-events: none;
     }
+
 </style>
 
     <script>
@@ -119,6 +141,14 @@
                 }
             }
             $("#clsOk").slideUp("slow");
+            
+            //$("#panel-bodyFF").click(function () {
+            //    $("#slideToggleFF").slideToggle("slow");
+            //});
+     
+            //$("#panel-bodyFFUPD").click(function () {
+            //    $("#slideToggleFFUPD").slideToggle("slow");
+            //});
         });
 
 
@@ -135,6 +165,7 @@
                 cache: false,
                 success: function (data) {
                     createfFTable(data);
+                    defaultFfData = data;
                 },
                 error: function (xhr) {
                     alert('Error al intentar obtener los datos');
@@ -158,6 +189,7 @@
             });
         }
 
+        var defaultFfData = [];
         var fDataArray = [];
         var data = [];
         var selectDataIndex;
@@ -165,6 +197,8 @@
         var btnPressed = 0;
         var selectDataIndexFF;
         var indexAllowedFF;
+        var defDesc;
+        var defVigente;
 
         function Guardar() {
             if(data.length <= 0)
@@ -176,6 +210,16 @@
                 document.getElementById("form").submit();
             }
         };
+
+        function Update() {
+            if (fDataArray.length <= 0) {
+                alert("No hay datos en la lista");
+            }
+            else {
+                document.getElementById("form").submit();
+            }
+        };
+
 
         function Agregar() {
             if (!btnPressed == 1) {
@@ -255,6 +299,7 @@
             imprimirFF(fDataArray);
         }
         function imprimirFF(fDataArray) {
+            $('[id="btnDelete"]').removeAttr('disabled');
             debugger
             $('#tbTablaFF').remove();
             if (!$.isEmptyObject(fDataArray)) {
@@ -297,16 +342,19 @@
                 if (tblData[x].FFNUPD == "S") {
                     icoClassName = "fa fa-refresh";
                     btnClassName = "btn btn-warning";
+                    deleteButtonRestriccion.disabled = false;
                 }
                 else {
                     icoClassName = "fa fa-thumbs-o-up";
                     btnClassName = "btn";
+                    deleteButtonRestriccion.disabled = true;
                 }
                 iconButtonRestriccion.className = icoClassName;
-                deleteButtonRestriccion.id = "btnDelete";
+                deleteButtonRestriccion.id = "btnDeleteFF";
 
                 deleteButtonRestriccion.className = btnClassName;
                 deleteButtonRestriccion.style = "width:100%";
+                
                
 
                 var editButtonRestrriccionCell = document.createElement("td");
@@ -333,83 +381,71 @@
 
 
                 //-----------------------------------------------------Inputs invisibles
-                //var txtIdGrupo = "FuenteFin[" + x + "].ID_GRUPO";
-                //var txtSubGrupoFuente = "FuenteFin[" + x + "].SUB_GRUPO_FUENTE";
-                //var txtFuenteFin = "FuenteFin[" + x + "].FUENTE_FINANCIAMIENTO";
-                //var txtVigente = "FuenteFin[" + x + "].VIGENTE";
-                //var txtDesc = "FuenteFin[" + x + "].DESC";
+                var txtIdGrupo = "FuenteFinUpd[" + x + "].FUENTEFUPD";
+                var  txtVigente= "FuenteFinUpd[" + x + "].VIGENTEFUPD";
+                var txtDesc = "FuenteFinUpd[" + x + "].DESC_FUENTEFUPD";
+                var txtFuenteFin = "FuenteFinUpd[" + x + "].FFNUPD";
 
 
+                var inputGrupo = document.createElement("input");
+                inputGrupo.id = txtIdGrupo;
+                inputGrupo.name = txtIdGrupo;
+                inputGrupo.value = tblData[x].FFGRUPOFFID;
+                inputGrupo.type = "Hidden";
 
-                //var inputGrupo = document.createElement("input");
-                //inputGrupo.id = txtIdGrupo;
-                //inputGrupo.name = txtIdGrupo;
-                //inputGrupo.value = tblData[x].grupoId;
-                //inputGrupo.type = "Hidden";
+                var inputFuenteFin = document.createElement("input");
+                inputFuenteFin.id = txtFuenteFin;
+                inputFuenteFin.name = txtFuenteFin;
+                inputFuenteFin.value = tblData[x].FFNUPD;
+                inputFuenteFin.type = "Hidden";
 
-                //var inputSubGrupo = document.createElement("input");
-                //inputSubGrupo.id = txtSubGrupoFuente;
-                //inputSubGrupo.name = txtSubGrupoFuente;
-                //inputSubGrupo.value = tblData[x].sGrupoTxt;
-                //inputSubGrupo.type = "Hidden";
+                var inputVigente = document.createElement("input");
+                inputVigente.id = txtVigente;
+                inputVigente.name = txtVigente;
+                inputVigente.value = tblData[x].FFVIGENTE;
+                inputVigente.type = "Hidden";
 
-                //var inputFuenteFin = document.createElement("input");
-                //inputFuenteFin.id = txtFuenteFin;
-                //inputFuenteFin.name = txtFuenteFin;
-                //inputFuenteFin.value = tblData[x].Perfil;
-                //inputFuenteFin.type = "Hidden";
-
-                //var inputVigente = document.createElement("input");
-                //inputVigente.id = txtVigente;
-                //inputVigente.name = txtVigente;
-                //inputVigente.value = tblData[x].Grupo;
-                //inputVigente.type = "Hidden";
-
-                //var inputDesc = document.createElement("input");
-                //inputDesc.id = txtDesc;
-                //inputDesc.name = txtDesc;
-                //inputDesc.value = tblData[x].Desc_Perf;
-                //inputDesc.type = "Hidden";
-
-
-
-
+                var inputDesc = document.createElement("input");
+                inputDesc.id = txtDesc;
+                inputDesc.name = txtDesc;
+                inputDesc.value = tblData[x].FFDESC;
+                inputDesc.type = "Hidden";
+                ///////////////////////////////////////////////////
                 var _FFGRUPO = tblData[x].FFGRUPOFFID;
-               
-                ////---------------------------------------------------------------
-                //deleteButtonRestriccion.addEventListener("click", callDelete(_Perf, _Grup));
+                ////-----------------------------------------------------------
+                deleteButtonRestriccion.addEventListener("click", callDeleteFF(_FFGRUPO));
                 editButtonRestrriccionCell.addEventListener("click", callEditFF(_FFGRUPO));
                 deleteButtonRestriccion.appendChild(iconButtonRestriccion);
                 //editButtonRestriccion.appendChild(editIconButtonRestriccion);
-                //----------------------------------------------------------------
+                //-------------------------------------------------------------
                 IdPerfCell.innerText = tblData[x].FFGRUPOFFID;
                 DescPerfCell.innerText = tblData[x].FFDESC;
                 //IdGrupoCell.innerText = tblData[x].Grupo;
                 //DescGrupoCell.innerText = tblData[x].Desc_Grup;
-                //-----------------------------------------------------------------
+                //--------------------------------------------------------------
                 deleteButtonRestrriccionCell.appendChild(deleteButtonRestriccion);
                 //editButtonRestrriccionCell.appendChild(editButtonRestriccion);
                 createCheckboxCell.appendChild(createCheckbox);
-                //------------------------------------------------------------------
+                //---------------------------------------------------------------
                 row.appendChild(editButtonRestrriccionCell);
                 row.appendChild(IdPerfCell);
 
                 //idgrupo/SubGrupo/Fuentefin
-                //row.appendChild(inputGrupo);
+                row.appendChild(inputGrupo);
                 //row.appendChild(inputSubGrupo);
-                //row.appendChild(inputFuenteFin);
+                row.appendChild(inputFuenteFin);
                 //
 
                 row.appendChild(createCheckboxCell);
 
                 //Vigente
-                //row.appendChild(inputVigente);
+                row.appendChild(inputVigente);
                 //
 
                 row.appendChild(DescPerfCell);
 
                 //Desc
-                //row.appendChild(inputDesc);
+                row.appendChild(inputDesc);
                 //
 
                 row.appendChild(deleteButtonRestrriccionCell);
@@ -424,6 +460,23 @@
                 editButtonClickFF(ID);
             };
         }
+        function callDeleteFF(Perfil, Grupo) {
+            return function () {
+                deleteButtonClickFF(Perfil, Grupo);
+            };
+        }
+        function deleteButtonClickFF(FFGRP) {
+            debugger
+            for (var i = 0; i < fDataArray.length; i++) {
+                if (fDataArray[i].FFGRUPOFFID == FFGRP) {
+
+                    fDataArray[i].FFVIGENTE = defaultFfData[i].VIGENTE,
+                    fDataArray[i].FFDESC = defaultFfData[i].DESC_FUENTE,
+                    fDataArray[i].FFNUPD = "";
+                }
+                }
+                imprimirFF(fDataArray);
+        }
         function editButtonClickFF(FFGRUPOFFID) {
             for (var i = 0; i < fDataArray.length; i++) {
                 if (fDataArray[i].FFGRUPOFFID == FFGRUPOFFID) {
@@ -433,6 +486,9 @@
                     indexAllowedFF = fDataArray[i].FFGRUPOFFID;
 
                    //Solo se tiene que guardar VIGENTE y DESCRIPCION
+                    defDesc = fDataArray[i].FFDESC;
+                    defVigente = fDataArray[i].FFVIGENTE;
+
 
                     $("#txtSubDesc").val(fDataArray[i].FFDESC);
                     var checkedFF = fDataArray[i].FFVIGENTE;
@@ -445,7 +501,7 @@
                         $("#ckbVigente").prop("checked", true);
                     }
 
-
+                    
 
                     document.getElementById("txtSubG").focus();
                     if (btnPressed == 0) {
@@ -473,44 +529,49 @@
                 isChecked = "";
             }
             var descFF = $('#txtSubDesc').val();
-            //var grupo = $('#ddGrupos').val();
-            //var fFinanciamientoId = grupo + $('#txtSubG').val();
-
+         
             if (descFF == "") {
                 LobiboxAlert('warning', 'Precaución', 'Escriba una descripción.');
             }
             else {
-                cargaDetalleEditadoFF(isChecked, descFF);
+                
+                
+                cargaDetalleEditadoFF(isChecked, descFF, defDesc, defVigente);
                 $('.ddGrupos-DropDownCls option').eq(0).prop('selected', true);
             }
         }
 
-        function cargaDetalleEditadoFF(isChecked, descFF) {
-            //var ExisteRestriccion = false;
-            //$.each(data, function (i, item) {
-            //    if (item.Perfil == fFinanciamientoId) {
-            //        ExisteRestriccion = true;
-            //    }
-            //});
-
+        function cargaDetalleEditadoFF(isChecked, descFF,defD,defV) {
+        
             debugger
-            //if (indexAllowedFF == fFinanciamientoId) {
-            //    ExisteRestriccion = false;
-            //}
-            //if ($.isEmptyObject(fDataArray) /*|| ExisteRestriccion == false*/) {
-                
+      
+            if (defV == "S")
+            {
+                defV = "checked"
+            }
+            else {
+                defV = "";
+            }
+            
+
+
+            if(defD != descFF || defV != isChecked)
+            {
+
                 fDataArray[selectDataIndexFF].FFBTNEDIT = "";
-                var chk;
-                if (isChecked == "checked") {
-                    chk = "S";
-                }
-                else {
-                    chk = "N";
-                }
-                fDataArray[selectDataIndexFF].FFVIGENTE = chk;
-                fDataArray[selectDataIndexFF].FFDESC = descFF;
-                fDataArray[selectDataIndexFF].FFUPD = "S";
-                fDataArray[selectDataIndexFF].FFNUPD = "S";
+            var chk;
+            if (isChecked == "checked") {
+                chk = "S";
+            }
+            else {
+                chk = "N";
+            }
+
+            fDataArray[selectDataIndexFF].FFVIGENTE = chk;
+            fDataArray[selectDataIndexFF].FFDESC = descFF;
+            fDataArray[selectDataIndexFF].FFUPD = "S";
+            fDataArray[selectDataIndexFF].FFNUPD = "S";
+        }
 
                 $("#clsOk").slideUp("slow");
                 $('#btnOkFF').remove();
@@ -529,6 +590,7 @@
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         function imprimir() {
+            $('[id="btnDelete"]').removeAttr('disabled');
             $('#tbTabla').remove();
             if (!$.isEmptyObject(data)) {
                 document.getElementById("tblPerfGrup").appendChild(ToTable(data));
@@ -572,24 +634,10 @@
 
 
 
-                //-----------------------------------------------------Boton Edit Original
-                //var editButtonRestrriccionCell = document.createElement("td");
-                //editButtonRestrriccionCell.width = "1%";
-                //var editButtonRestriccion = document.createElement("input");
-                //var editIconButtonRestriccion = document.createElement("i");
-                //var attEdit = document.createAttribute("aria-hidden");
-                //attEdit.value = true;
-                //editIconButtonRestriccion.setAttributeNode(attEdit);
-                //editIconButtonRestriccion.className = "fa fa-pencil-square-o";
-                //editButtonRestriccion.type = "button";
-                //editButtonRestriccion.className = "glyphicon glyphicon-edit btn btn-info";
-                //editButtonRestriccion.style = "width:100%";
-
-                //
+             
                 var editButtonRestrriccionCell = document.createElement("td");
                 editButtonRestrriccionCell.width = "1px";
                 editButtonRestrriccionCell.style = "padding: 0px;";
-                //var editButtonRestriccion = '<button id="btnGuardar" type="button" class="glyphicon glyphicon-edit btn btn-info" style="width: 100%;"></button>';
                 editButtonRestrriccionCell.innerHTML = '<button id="btnEditar" type="button" class="glyphicon glyphicon-edit btn btn-info" style="width:37px; height:34px; display:block; "></button>';
                 //-----------------------------------------------------
                 var createCheckboxCell = document.createElement("td");
@@ -609,9 +657,7 @@
                 createCheckbox.checked = chk;
                 createCheckbox.setAttribute("readonly",null);
                 createCheckbox.style = 'width:37px; height:25px;';
-
-
-                //-----------------------------------------------------Inputs invisibles
+                //---------------------------------------------Inputs invisibles
                 var txtIdGrupo = "FuenteFin[" + x + "].ID_GRUPO";
                 var txtSubGrupoFuente = "FuenteFin[" + x + "].SUB_GRUPO_FUENTE";
                 var txtFuenteFin = "FuenteFin[" + x + "].FUENTE_FINANCIAMIENTO";
@@ -660,16 +706,16 @@
                 editButtonRestrriccionCell.addEventListener("click", callEdit(_Perf, _Grup));
                 deleteButtonRestriccion.appendChild(iconButtonRestriccion);
                 //editButtonRestriccion.appendChild(editIconButtonRestriccion);
-                //----------------------------------------------------------------
+                //-------------------------------------------------------------
                 IdPerfCell.innerText = tblData[x].Perfil;
                 DescPerfCell.innerText = tblData[x].Desc_Perf;
                 IdGrupoCell.innerText = tblData[x].Grupo;
                 DescGrupoCell.innerText = tblData[x].Desc_Grup;
-                //-----------------------------------------------------------------
+                //---------------------------------------------------------------
                 deleteButtonRestrriccionCell.appendChild(deleteButtonRestriccion);
                 //editButtonRestrriccionCell.appendChild(editButtonRestriccion);
                 createCheckboxCell.appendChild(createCheckbox);
-                //------------------------------------------------------------------
+                //---------------------------------------------------------------
                 row.appendChild(editButtonRestrriccionCell);
                 row.appendChild(IdPerfCell);
 
