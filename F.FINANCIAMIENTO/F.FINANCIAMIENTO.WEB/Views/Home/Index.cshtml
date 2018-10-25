@@ -1,5 +1,4 @@
 ﻿@model F.FINANCIAMIENTO.DTO.INSERTDTO
-
 @{
     ViewBag.Title = "Index";
 }
@@ -53,6 +52,7 @@
                
                     <div class="panel-heading" style="padding:0px;">
                         <div id="panel-bodyFF" class="panel-body" style="padding:0px;">
+                            <label class="pull-left">GUARDAR</label>
                             <button id="addBtn" type="button" class="glyphicon glyphicon-plus btn btn-info pull-right" onclick="Agregar()"></button>
                         </div>
                     </div>
@@ -84,6 +84,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading" style="padding:0px;">
                     <div id="panel-bodyFFUPD" class="panel-body" style="padding:0px;">
+                        <label class="pull-left">ACTUALIZAR</label>
                         <button id="cargarBtn" type="button" class="glyphicon glyphicon-upload btn btn-info pull-right" onclick="Upload()"></button>
                     </div>
                 </div>
@@ -108,8 +109,8 @@
                         </div>
                     </div>
                 </div>
-                    </div>
             </div>
+        </div>
     <div id="pFooter" class="panel-footer">
         <div id="pBodyFooter" class="panel-body" style="padding:0px;">
             <button id="btnGuardar" type="button" class="glyphicon glyphicon-refresh btn btn-success btn-lg pull-left"  onclick="Update()"></button>
@@ -141,20 +142,12 @@
                 }
             }
             $("#clsOk").slideUp("slow");
-            
-            //$("#panel-bodyFF").click(function () {
-            //    $("#slideToggleFF").slideToggle("slow");
-            //});
-     
-            //$("#panel-bodyFFUPD").click(function () {
-            //    $("#slideToggleFFUPD").slideToggle("slow");
-            //});
         });
 
 
         function Upload() {
             debugger
-           
+
             $.ajax({
                 url: '/Home/getFFinanciamiento',
                 dataType: "json",
@@ -201,22 +194,50 @@
         var defVigente;
 
         function Guardar() {
+            debugger
             if(data.length <= 0)
             {
-                alert("No hay datos en la lista");
+                LobiboxAlert('warning', 'Precaución', 'No hay datos en la lista.');
             }
             else
             {
-                document.getElementById("form").submit();
+                debugger
+                var form = $("#form");
+                $.ajax({
+                    url: '/Home/GetData',
+                    data: form.serialize(),
+                    //data: JSON.stringify(form),
+                    type: 'POST',
+                    success: function (data) {
+                        //Show popup
+                        LobiboxAlert('success', 'Exito', data);
+                    }
+                });
             }
         };
 
         function Update() {
+            debugger
             if (fDataArray.length <= 0) {
-                alert("No hay datos en la lista");
+                LobiboxAlert('warning', 'Precaución', 'No hay datos en la lista.');
+            }
+            else if($("#btnDeleteFFNUPD").length <= 0)
+            {
+                LobiboxAlert('warning', 'Precaución', 'No hay datos para actualizar.');
             }
             else {
-                document.getElementById("form").submit();
+                debugger
+                var form = $("#form");
+                $.ajax({
+                    url: '/Home/Update',
+                    data: form.serialize(),
+                    //data: JSON.stringify(form),
+                    type: 'POST',
+                    success: function (data) {
+                        //Show popup
+                        LobiboxAlert('success', 'Exito', data);
+                    }
+                });
             }
         };
 
@@ -229,8 +250,6 @@
                 } else {
                     isChecked = "N";
                 }
-
-
                 var grupo = $('#ddGrupos').val();
                 var fFinanciamientoId = grupo + $('#txtSubG').val();
 
@@ -249,10 +268,10 @@
         };
 
         function cargaDetalle(isChecked,fFinanciamientoId, grupo,sGrupo) {
-            
-           
+
+
             Desc_Perfil = $('#txtSubDesc').val();
-         
+
 
             var ExisteRestriccion = false;
             $.each(data, function (i, item) {
@@ -261,7 +280,7 @@
                 }
             });
 
-            
+
             if ($.isEmptyObject(data) || ExisteRestriccion == false) {
                 data.push({
                     grupoId: grupo,
@@ -276,7 +295,7 @@
             }
             else
             {
-                alert('Precaución, '+'la restricción ya esxiste.');
+                alert('Precaución,'+'la restricción ya esxiste.');
             }
         };
 
@@ -305,7 +324,6 @@
             if (!$.isEmptyObject(fDataArray)) {
                 document.getElementById("tblFF").appendChild(ToTableFF(fDataArray));
             }
-            
             $('#txtSubG').val("");
             $('#txtSubDesc').val("");
         };
@@ -327,8 +345,6 @@
                 //
                 //var IdGrupoCell = document.createElement("td");
                 //var DescGrupoCell = document.createElement("td");
-
-
                 var deleteButtonRestrriccionCell = document.createElement("td");
                 deleteButtonRestrriccionCell.width = "1%";
                 deleteButtonRestrriccionCell.style = "padding: 0px;";
@@ -343,19 +359,25 @@
                     icoClassName = "fa fa-refresh";
                     btnClassName = "btn btn-warning";
                     deleteButtonRestriccion.disabled = false;
+                    deleteButtonRestriccion.id = "btnDeleteFFNUPD";
                 }
                 else {
                     icoClassName = "fa fa-thumbs-o-up";
                     btnClassName = "btn";
                     deleteButtonRestriccion.disabled = true;
+                    deleteButtonRestriccion.id = "btnDeleteFF";
                 }
                 iconButtonRestriccion.className = icoClassName;
-                deleteButtonRestriccion.id = "btnDeleteFF";
+
+
+
+
+                
 
                 deleteButtonRestriccion.className = btnClassName;
                 deleteButtonRestriccion.style = "width:100%";
-                
-               
+
+
 
                 var editButtonRestrriccionCell = document.createElement("td");
                 editButtonRestrriccionCell.width = "1px";
@@ -501,10 +523,12 @@
                         $("#ckbVigente").prop("checked", true);
                     }
 
-                    
-
                     document.getElementById("txtSubG").focus();
                     if (btnPressed == 0) {
+                        if (!$("#btnDeleteFFNUPD").length <= 0)
+                        {
+                            $('[id="btnDeleteFFNUPD"]').prop("disabled", true);
+                        }
                         $('[id="btnDelete"]').prop("disabled", true);
                         $('#txtSubG').prop("disabled", true);
                         $('#ddGrupos').prop("disabled", true);
@@ -529,22 +553,22 @@
                 isChecked = "";
             }
             var descFF = $('#txtSubDesc').val();
-         
+
             if (descFF == "") {
                 LobiboxAlert('warning', 'Precaución', 'Escriba una descripción.');
             }
             else {
-                
-                
+
+
                 cargaDetalleEditadoFF(isChecked, descFF, defDesc, defVigente);
                 $('.ddGrupos-DropDownCls option').eq(0).prop('selected', true);
             }
         }
 
         function cargaDetalleEditadoFF(isChecked, descFF,defD,defV) {
-        
+
             debugger
-      
+
             if (defV == "S")
             {
                 defV = "checked"
@@ -552,7 +576,7 @@
             else {
                 defV = "";
             }
-            
+
 
 
             if(defD != descFF || defV != isChecked)
@@ -605,7 +629,7 @@
             table2.className = "table";
             for (var x = 0; x < tblData.length; x++) {
                 var row = document.createElement("tr");
-            
+
                 //
                 var IdPerfCell = document.createElement("td");
                 IdPerfCell.width = "150px";
@@ -616,7 +640,7 @@
                 //
                 var IdGrupoCell = document.createElement("td");
                 var DescGrupoCell = document.createElement("td");
-                
+
 
                 var deleteButtonRestrriccionCell = document.createElement("td");
                 deleteButtonRestrriccionCell.width = "1%";
@@ -634,7 +658,7 @@
 
 
 
-             
+
                 var editButtonRestrriccionCell = document.createElement("td");
                 editButtonRestrriccionCell.width = "1px";
                 editButtonRestrriccionCell.style = "padding: 0px;";
@@ -664,7 +688,7 @@
                 var txtVigente = "FuenteFin[" + x + "].VIGENTE";
                 var txtDesc = "FuenteFin[" + x + "].DESC";
 
-              
+
 
                 var inputGrupo = document.createElement("input");
                 inputGrupo.id = txtIdGrupo;
@@ -738,7 +762,7 @@
                 //
 
                 row.appendChild(deleteButtonRestrriccionCell);
-          
+
 
                 table2.appendChild(row);
             }
