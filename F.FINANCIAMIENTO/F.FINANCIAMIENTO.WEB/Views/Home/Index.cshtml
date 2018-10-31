@@ -36,11 +36,12 @@
                 <div class="form-group col-lg-12">
                     <div class="col-sm-3">
                         <label>SUB-GRUPO</label>
-                        <input name="txtSubG" id="txtSubG" type="number" class="form-control" placeholder="0" />
+                        <input name="txtSubG" id="txtSubG"  type="number" class="form-control" placeholder="0" />
                     </div>
                     <div class="col-sm-3">
                         <label>DESCRIPCIÓN</label>
-                        @Html.TextBox("txtSubDesc", "", new { id = "txtSubDesc", type = "text", @class = "form-control" ,style ="width:800px; max-width:1000px;"})
+                        @Html.TextBox("txtSubDesc", "", new { id = "txtSubDesc", type = "text", @class = "form-control"}) 
+                      @*,style ="width:800px; max-width:1000px;*@
                     </div>
                 </div>
             </div>
@@ -120,10 +121,18 @@
 </div>
 
 <style>
-       .ChkBrOnly input[type="checkbox"][readonly] {
+       .ChkBrOnly input[type="checkbox"][readonly] 
+       {
         pointer-events: none;
-    }
+       }
 
+       .unselectable
+       {
+           background-color: #ddd;
+           border-color:#ddd;
+           pointer-events: none;
+           /*cursor: not-allowed;*/
+       }
 </style>
 
     <script>
@@ -243,27 +252,34 @@
 
 
         function Agregar() {
-            if (!btnPressed == 1) {
-                var isChecked;
-                if ($('#ckbVigente').is(":checked")) {
-                    isChecked = "checked";
-                } else {
-                    isChecked = "N";
-                }
-                var grupo = $('#ddGrupos').val();
-                var fFinanciamientoId = grupo + $('#txtSubG').val();
+            debugger
+            var desc = $('#txtSubDesc').val();
+            if (desc != "") {
+                if (!btnPressed == 1) {
+                    var isChecked;
+                    if ($('#ckbVigente').is(":checked")) {
+                        isChecked = "checked";
+                    } else {
+                        isChecked = "N";
+                    }
+                    var grupo = $('#ddGrupos').val();
+                    var fFinanciamientoId = grupo + $('#txtSubG').val();
 
-                if ($('#ckbVigente').val() == "") {
-                    LobiboxAlert('warning', 'Precaución', 'Seleccione un Perfil.');
+                    if ($('#ckbVigente').val() == "") {
+                        LobiboxAlert('warning', 'Precaución', 'Seleccione un Perfil.');
+                    }
+                    else {
+                        cargaDetalle(isChecked, fFinanciamientoId, $('#ddGrupos').val(), $('#txtSubG').val());
+                        imprimir();
+                        $('.ddGrupos-DropDownCls option').eq(0).prop('selected', true);
+                    }
                 }
                 else {
-                    cargaDetalle(isChecked, fFinanciamientoId, $('#ddGrupos').val(), $('#txtSubG').val());
-                    imprimir();
-                    $('.ddGrupos-DropDownCls option').eq(0).prop('selected', true);
+                    alert("Esta en modo edición")
                 }
             }
             else {
-                alert("Esta en modo edición")
+                LobiboxAlert('warning', 'Precaución', 'Escriba una descripción.');
             }
         };
 
@@ -380,10 +396,11 @@
 
 
                 var editButtonRestrriccionCell = document.createElement("td");
+                editButtonRestrriccionCell.id = "editCellFF";
                 editButtonRestrriccionCell.width = "1px";
                 editButtonRestrriccionCell.style = "padding: 0px;";
                 //var editButtonRestriccion = '<button id="btnGuardar" type="button" class="glyphicon glyphicon-edit btn btn-info" style="width: 100%;"></button>';
-                editButtonRestrriccionCell.innerHTML = '<button id="btnEditar" type="button" class="glyphicon glyphicon-edit btn btn-info" style="width:37px; height:34px; display:block; "></button>';
+                editButtonRestrriccionCell.innerHTML = '<button id="btnEditarFF" type="button" class="glyphicon glyphicon-edit btn btn-info" style="width:37px; height:34px; display:block; "></button>';
                 //-----------------------------------------------------
                 var createCheckboxCell = document.createElement("td");
                 createCheckboxCell.width = "1px";
@@ -524,16 +541,30 @@
                     }
 
                     document.getElementById("txtSubG").focus();
+                    if (!$("#btnOk").length <= 0) {
+                        $('#btnOk').attr('onclick', 'EditarFF()');
+                        $('#btnOk').attr('id', 'btnOkFF');
+                    }
                     if (btnPressed == 0) {
                         if (!$("#btnDeleteFFNUPD").length <= 0)
                         {
                             $('[id="btnDeleteFFNUPD"]').prop("disabled", true);
                         }
+
+                        //if (!$("#btnOk").length <= 0) {
+                        //    $('#btnOk').attr('onclick', 'EditarFF()');
+                        //    $('#btnOk').attr('id', 'btnOkFF');
+                        //}
+
+
+
                         $('[id="btnDelete"]').prop("disabled", true);
                         $('#txtSubG').prop("disabled", true);
                         $('#ddGrupos').prop("disabled", true);
                         $('#addBtn').prop("disabled", true);
                         $('#btnGuardar').prop("disabled", true);
+                        $('#cargarBtn').prop("disabled", true);
+                        $('[id="editCell"]').addClass('unselectable');
                         $('#clsOk').append('<button id="btnOkFF" type="button" class="glyphicon glyphicon-ok btn btn-success pull-left" onclick="EditarFF()"></button>');
                         $("#clsOk").slideDown("slow");
                         btnPressed = 1;
@@ -604,6 +635,8 @@
                 $('#btnGuardar').removeAttr('disabled');
                 $('#txtSubG').removeAttr('disabled');
                 $('#ddGrupos').removeAttr('disabled');
+                $('#cargarBtn').removeAttr('disabled');
+                $('[id="editCell"]').removeClass('unselectable');
                 imprimirFF(fDataArray);
             //}
             //else {
@@ -655,11 +688,8 @@
                 deleteButtonRestriccion.className = "btn btn-danger";
                 deleteButtonRestriccion.style = "width:100%";
 
-
-
-
-
                 var editButtonRestrriccionCell = document.createElement("td");
+                editButtonRestrriccionCell.id = "editCell";
                 editButtonRestrriccionCell.width = "1px";
                 editButtonRestrriccionCell.style = "padding: 0px;";
                 editButtonRestrriccionCell.innerHTML = '<button id="btnEditar" type="button" class="glyphicon glyphicon-edit btn btn-info" style="width:37px; height:34px; display:block; "></button>';
@@ -820,10 +850,17 @@
                     }
 
                     document.getElementById("txtSubG").focus();
+                    //if (!$("#btnOkFF").length <= 0) {
+                    //    $('#btnOkFF').attr('onclick', 'Editar()');
+                    //    $('#btnOkFF').attr('id', 'btnOk');
+                    //}
                     if (btnPressed == 0) {
                         $('[id="btnDelete"]').prop("disabled", true);
                         $('#addBtn').prop("disabled", true);
                         $('#btnGuardar').prop("disabled", true);
+                        $('#cargarBtn').prop("disabled", true);
+                        //$('[id="editCellFF"]').prop("disabled", true);
+                        $('[id="editCellFF"]').addClass('unselectable');
                         $('#clsOk').append('<button id="btnOk" type="button" class="glyphicon glyphicon-ok btn btn-success pull-left" onclick="Editar()"></button>');
                         $("#clsOk").slideDown("slow");
                         btnPressed = 1;
@@ -837,22 +874,26 @@
         function Editar() {
             debugger
 
+            if ($('#txtSubDesc').val() != "") {
+                var isChecked;
+                if ($('#ckbVigente').is(":checked")) {
+                    isChecked = "checked";
+                } else {
+                    isChecked = "";
+                }
+                var grupo = $('#ddGrupos').val();
+                var fFinanciamientoId = grupo + $('#txtSubG').val();
 
-            var isChecked;
-            if ($('#ckbVigente').is(":checked")) {
-                isChecked = "checked";
-            } else {
-                isChecked = "";
-            }
-            var grupo = $('#ddGrupos').val();
-            var fFinanciamientoId = grupo + $('#txtSubG').val();
-
-            if ($('#ckbVigente').val() == "") {
-                LobiboxAlert('warning', 'Precaución', 'Seleccione un Perfil.');
+                if ($('#ckbVigente').val() == "") {
+                    LobiboxAlert('warning', 'Precaución', 'Seleccione un Perfil.');
+                }
+                else {
+                    cargaDetalleEditado(isChecked, fFinanciamientoId, $('#ddGrupos').val(), $('#txtSubG').val());
+                    $('.ddGrupos-DropDownCls option').eq(0).prop('selected', true);
+                }
             }
             else {
-                cargaDetalleEditado(isChecked, fFinanciamientoId, $('#ddGrupos').val(), $('#txtSubG').val());
-                $('.ddGrupos-DropDownCls option').eq(0).prop('selected', true);
+                LobiboxAlert('warning', 'Precaución', 'Escriba una descripción.');
             }
         }
 
@@ -883,6 +924,9 @@
                     btnPressed = 0;
                     $('#addBtn').removeAttr('disabled');
                     $('#btnGuardar').removeAttr('disabled');
+                    $('#cargarBtn').removeAttr('disabled');
+                    //$('#editCellFF').removeAttr('disabled');
+                    $('[id="editCellFF"]').removeClass('unselectable');
                     imprimir();
                 }
                 else {

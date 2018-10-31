@@ -8,7 +8,6 @@ namespace F.FINANCIAMIENTO.DTO
 {
    public class UPDATEDTO
     {
-
         public List<LSTUPDATE> FuenteFinUpd { get; set; }
     
     }

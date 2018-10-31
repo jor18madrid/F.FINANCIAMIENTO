@@ -53,11 +53,8 @@ namespace F.FINANCIAMIENTO.WEB.Controllers
         [HttpPost]
         public ActionResult Update(UPDATEDTO updData)
         {
-
-            var nUpd = updData.FuenteFinUpd.Where(x => x.FFNUPD == "S").OrderBy(y => y.FUENTEFUPD);
-            var num = nUpd.Count();
-            //ExecuteQuery.result = ExecuteQuery.Execute(data);
-            return Json("Retorna del controlador UPDATE " + num.ToString(), JsonRequestBehavior.DenyGet);
+            //Update_FFinanciamiento.Execute(updData);
+            return Json("Retorna del controlador UPDATE ", JsonRequestBehavior.DenyGet);
         }
 
 
