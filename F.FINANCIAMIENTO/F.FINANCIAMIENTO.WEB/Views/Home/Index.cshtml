@@ -41,7 +41,6 @@
                     <div class="col-sm-3">
                         <label>DESCRIPCIÓN</label>
                         @Html.TextBox("txtSubDesc", "", new { id = "txtSubDesc", type = "text", @class = "form-control"}) 
-                      @*,style ="width:800px; max-width:1000px;*@
                     </div>
                 </div>
             </div>
@@ -131,7 +130,6 @@
            background-color: #ddd;
            border-color:#ddd;
            pointer-events: none;
-           /*cursor: not-allowed;*/
        }
 </style>
 
@@ -166,11 +164,12 @@
                 processData: false,
                 cache: false,
                 success: function (data) {
+                    debugger
                     createfFTable(data);
                     defaultFfData = data;
                 },
                 error: function (xhr) {
-                    alert('Error al intentar obtener los datos');
+                    LobiboxAlert('warning', 'Precaución', 'Error al intentar obtener los datos.');
                 }
             });
 
@@ -215,15 +214,28 @@
                 $.ajax({
                     url: '/Home/GetData',
                     data: form.serialize(),
-                    //data: JSON.stringify(form),
                     type: 'POST',
                     success: function (data) {
-                        //Show popup
+                        clear();
                         LobiboxAlert('success', 'Exito', data);
+                    },
+                    error: function (xhr) {
+                        LobiboxAlert('warning', 'Precaución', 'Error al intentar guardar los datos.');
+
                     }
                 });
             }
         };
+
+        function clear() {
+            data = [];
+            imprimir();
+        }
+
+        function clearFF() {
+            fDataArray = [];
+            imprimirFF(fDataArray);
+        }
 
         function Update() {
             debugger
@@ -240,11 +252,15 @@
                 $.ajax({
                     url: '/Home/Update',
                     data: form.serialize(),
-                    //data: JSON.stringify(form),
                     type: 'POST',
                     success: function (data) {
-                        //Show popup
+                        clearFF();
                         LobiboxAlert('success', 'Exito', data);
+
+                    },
+                    error: function (xhr) {
+                        LobiboxAlert('warning', 'Precaución', 'Error al intentar actualizar los datos.');
+
                     }
                 });
             }
@@ -285,9 +301,7 @@
 
         function cargaDetalle(isChecked,fFinanciamientoId, grupo,sGrupo) {
 
-
             Desc_Perfil = $('#txtSubDesc').val();
-
 
             var ExisteRestriccion = false;
             $.each(data, function (i, item) {
@@ -311,11 +325,10 @@
             }
             else
             {
-                alert('Precaución,'+'la restricción ya esxiste.');
+                LobiboxAlert('warning', 'Precaución', 'La restricción ya existe.');
             }
         };
 
-        ///////////////Mandar funcion debajo del document.ready/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         function createfFTable(fData) {
             debugger
             fDataArray = [];
@@ -359,8 +372,7 @@
                 var DescPerfCell = document.createElement("td");
                 DescPerfCell.width = "800px";
                 //
-                //var IdGrupoCell = document.createElement("td");
-                //var DescGrupoCell = document.createElement("td");
+                
                 var deleteButtonRestrriccionCell = document.createElement("td");
                 deleteButtonRestrriccionCell.width = "1%";
                 deleteButtonRestrriccionCell.style = "padding: 0px;";
@@ -385,21 +397,13 @@
                 }
                 iconButtonRestriccion.className = icoClassName;
 
-
-
-
-                
-
                 deleteButtonRestriccion.className = btnClassName;
                 deleteButtonRestriccion.style = "width:100%";
-
-
 
                 var editButtonRestrriccionCell = document.createElement("td");
                 editButtonRestrriccionCell.id = "editCellFF";
                 editButtonRestrriccionCell.width = "1px";
                 editButtonRestrriccionCell.style = "padding: 0px;";
-                //var editButtonRestriccion = '<button id="btnGuardar" type="button" class="glyphicon glyphicon-edit btn btn-info" style="width: 100%;"></button>';
                 editButtonRestrriccionCell.innerHTML = '<button id="btnEditarFF" type="button" class="glyphicon glyphicon-edit btn btn-info" style="width:37px; height:34px; display:block; "></button>';
                 //-----------------------------------------------------
                 var createCheckboxCell = document.createElement("td");
@@ -417,7 +421,6 @@
                 createCheckbox.checked = chk;
                 createCheckbox.setAttribute("readonly", null);
                 createCheckbox.style = 'width:37px; height:25px;';
-
 
                 //-----------------------------------------------------Inputs invisibles
                 var txtIdGrupo = "FuenteFinUpd[" + x + "].FUENTEFUPD";
@@ -455,15 +458,11 @@
                 deleteButtonRestriccion.addEventListener("click", callDeleteFF(_FFGRUPO));
                 editButtonRestrriccionCell.addEventListener("click", callEditFF(_FFGRUPO));
                 deleteButtonRestriccion.appendChild(iconButtonRestriccion);
-                //editButtonRestriccion.appendChild(editIconButtonRestriccion);
                 //-------------------------------------------------------------
                 IdPerfCell.innerText = tblData[x].FFGRUPOFFID;
                 DescPerfCell.innerText = tblData[x].FFDESC;
-                //IdGrupoCell.innerText = tblData[x].Grupo;
-                //DescGrupoCell.innerText = tblData[x].Desc_Grup;
                 //--------------------------------------------------------------
                 deleteButtonRestrriccionCell.appendChild(deleteButtonRestriccion);
-                //editButtonRestrriccionCell.appendChild(editButtonRestriccion);
                 createCheckboxCell.appendChild(createCheckbox);
                 //---------------------------------------------------------------
                 row.appendChild(editButtonRestrriccionCell);
@@ -524,7 +523,6 @@
                     selectDataIndexFF = i;
                     indexAllowedFF = fDataArray[i].FFGRUPOFFID;
 
-                   //Solo se tiene que guardar VIGENTE y DESCRIPCION
                     defDesc = fDataArray[i].FFDESC;
                     defVigente = fDataArray[i].FFVIGENTE;
 
@@ -550,19 +548,11 @@
                         {
                             $('[id="btnDeleteFFNUPD"]').prop("disabled", true);
                         }
-
-                        //if (!$("#btnOk").length <= 0) {
-                        //    $('#btnOk').attr('onclick', 'EditarFF()');
-                        //    $('#btnOk').attr('id', 'btnOkFF');
-                        //}
-
-
-
                         $('[id="btnDelete"]').prop("disabled", true);
                         $('#txtSubG').prop("disabled", true);
                         $('#ddGrupos').prop("disabled", true);
                         $('#addBtn').prop("disabled", true);
-                        $('#btnGuardar').prop("disabled", true);
+                        $('[id="btnGuardar"]').prop("disabled", true);
                         $('#cargarBtn').prop("disabled", true);
                         $('[id="editCell"]').addClass('unselectable');
                         $('#clsOk').append('<button id="btnOkFF" type="button" class="glyphicon glyphicon-ok btn btn-success pull-left" onclick="EditarFF()"></button>');
@@ -589,8 +579,6 @@
                 LobiboxAlert('warning', 'Precaución', 'Escriba una descripción.');
             }
             else {
-
-
                 cargaDetalleEditadoFF(isChecked, descFF, defDesc, defVigente);
                 $('.ddGrupos-DropDownCls option').eq(0).prop('selected', true);
             }
@@ -632,19 +620,14 @@
                 $('#btnOkFF').remove();
                 btnPressed = 0;
                 $('#addBtn').removeAttr('disabled');
-                $('#btnGuardar').removeAttr('disabled');
+                $('[id="btnGuardar"]').removeAttr('disabled');
                 $('#txtSubG').removeAttr('disabled');
                 $('#ddGrupos').removeAttr('disabled');
                 $('#cargarBtn').removeAttr('disabled');
                 $('[id="editCell"]').removeClass('unselectable');
                 imprimirFF(fDataArray);
-            //}
-            //else {
-            //    alert('Precaución, ' + 'la restricción ya existe.');
-            //}
         };
 
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         function imprimir() {
             $('[id="btnDelete"]').removeAttr('disabled');
@@ -759,7 +742,6 @@
                 deleteButtonRestriccion.addEventListener("click", callDelete( _Perf, _Grup));
                 editButtonRestrriccionCell.addEventListener("click", callEdit(_Perf, _Grup));
                 deleteButtonRestriccion.appendChild(iconButtonRestriccion);
-                //editButtonRestriccion.appendChild(editIconButtonRestriccion);
                 //-------------------------------------------------------------
                 IdPerfCell.innerText = tblData[x].Perfil;
                 DescPerfCell.innerText = tblData[x].Desc_Perf;
@@ -767,13 +749,11 @@
                 DescGrupoCell.innerText = tblData[x].Desc_Grup;
                 //---------------------------------------------------------------
                 deleteButtonRestrriccionCell.appendChild(deleteButtonRestriccion);
-                //editButtonRestrriccionCell.appendChild(editButtonRestriccion);
                 createCheckboxCell.appendChild(createCheckbox);
                 //---------------------------------------------------------------
                 row.appendChild(editButtonRestrriccionCell);
                 row.appendChild(IdPerfCell);
 
-                //idgrupo/SubGrupo/Fuentefin
                 row.appendChild(inputGrupo);
                 row.appendChild(inputSubGrupo);
                 row.appendChild(inputFuenteFin);
@@ -850,16 +830,12 @@
                     }
 
                     document.getElementById("txtSubG").focus();
-                    //if (!$("#btnOkFF").length <= 0) {
-                    //    $('#btnOkFF').attr('onclick', 'Editar()');
-                    //    $('#btnOkFF').attr('id', 'btnOk');
-                    //}
+                    
                     if (btnPressed == 0) {
                         $('[id="btnDelete"]').prop("disabled", true);
                         $('#addBtn').prop("disabled", true);
-                        $('#btnGuardar').prop("disabled", true);
+                        $('[id="btnGuardar"]').prop("disabled", true);
                         $('#cargarBtn').prop("disabled", true);
-                        //$('[id="editCellFF"]').prop("disabled", true);
                         $('[id="editCellFF"]').addClass('unselectable');
                         $('#clsOk').append('<button id="btnOk" type="button" class="glyphicon glyphicon-ok btn btn-success pull-left" onclick="Editar()"></button>');
                         $("#clsOk").slideDown("slow");
@@ -923,9 +899,8 @@
                     $('#btnOk').remove();
                     btnPressed = 0;
                     $('#addBtn').removeAttr('disabled');
-                    $('#btnGuardar').removeAttr('disabled');
+                    $('[id="btnGuardar"]').removeAttr('disabled');
                     $('#cargarBtn').removeAttr('disabled');
-                    //$('#editCellFF').removeAttr('disabled');
                     $('[id="editCellFF"]').removeClass('unselectable');
                     imprimir();
                 }
