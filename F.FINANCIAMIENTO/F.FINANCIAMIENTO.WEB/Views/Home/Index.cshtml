@@ -134,9 +134,9 @@
 </style>
 
     <script>
-        debugger
+        
         $(document).ready(function () {
-            debugger
+            
             if ($('#txtResult').val() != "")
             {
                 if (!$('#txtResult').val().includes("Code:"))
@@ -153,7 +153,7 @@
 
 
         function Upload() {
-            debugger
+            
 
             $.ajax({
                 url: '/Home/getFFinanciamiento',
@@ -164,7 +164,7 @@
                 processData: false,
                 cache: false,
                 success: function (data) {
-                    debugger
+                    
                     createfFTable(data);
                     defaultFfData = data;
                 },
@@ -202,14 +202,14 @@
         var defVigente;
 
         function Guardar() {
-            debugger
+            
             if(data.length <= 0)
             {
                 LobiboxAlert('warning', 'Precaución', 'No hay datos en la lista.');
             }
             else
             {
-                debugger
+                
                 var form = $("#form");
                 $.ajax({
                     url: '/Home/GetData',
@@ -238,7 +238,7 @@
         }
 
         function Update() {
-            debugger
+            
             if (fDataArray.length <= 0) {
                 LobiboxAlert('warning', 'Precaución', 'No hay datos en la lista.');
             }
@@ -247,7 +247,7 @@
                 LobiboxAlert('warning', 'Precaución', 'No hay datos para actualizar.');
             }
             else {
-                debugger
+                
                 var form = $("#form");
                 $.ajax({
                     url: '/Home/Update',
@@ -268,7 +268,7 @@
 
 
         function Agregar() {
-            debugger
+            
             var desc = $('#txtSubDesc').val();
             if (desc != "") {
                 if (!btnPressed == 1) {
@@ -330,7 +330,7 @@
         };
 
         function createfFTable(fData) {
-            debugger
+            
             fDataArray = [];
             var jsonObjectFF = fData;
 
@@ -348,7 +348,7 @@
         }
         function imprimirFF(fDataArray) {
             $('[id="btnDelete"]').removeAttr('disabled');
-            debugger
+            
             $('#tbTablaFF').remove();
             if (!$.isEmptyObject(fDataArray)) {
                 document.getElementById("tblFF").appendChild(ToTableFF(fDataArray));
@@ -358,7 +358,7 @@
         };
 
         function ToTableFF(tblData) {
-            debugger
+            
             var table2 = document.createElement("tbody");
             table2.id = "tbTablaFF";
             table2.className = "table";
@@ -504,7 +504,7 @@
             };
         }
         function deleteButtonClickFF(FFGRP) {
-            debugger
+            
             for (var i = 0; i < fDataArray.length; i++) {
                 if (fDataArray[i].FFGRUPOFFID == FFGRP) {
 
@@ -518,7 +518,7 @@
         function editButtonClickFF(FFGRUPOFFID) {
             for (var i = 0; i < fDataArray.length; i++) {
                 if (fDataArray[i].FFGRUPOFFID == FFGRUPOFFID) {
-                    debugger
+                    
 
                     selectDataIndexFF = i;
                     indexAllowedFF = fDataArray[i].FFGRUPOFFID;
@@ -566,7 +566,7 @@
         }
 
         function EditarFF() {
-            debugger
+            
             var isChecked;
             if ($('#ckbVigente').is(":checked")) {
                 isChecked = "checked";
@@ -586,7 +586,7 @@
 
         function cargaDetalleEditadoFF(isChecked, descFF,defD,defV) {
 
-            debugger
+            
 
             if (defV == "S")
             {
@@ -811,7 +811,7 @@
         function editButtonClick(Perfil, Grupo) {
             for (var i = 0; i < data.length; i++) {
                 if (data[i].Perfil == Perfil && data[i].Grupo == Grupo) {
-                    debugger
+                    
                     selectDataIndex = i;
                     indexAllowed = data[i].Perfil;
                     var ddSelected = data[i].grupoId;
@@ -848,7 +848,7 @@
         }
 
         function Editar() {
-            debugger
+            
 
             if ($('#txtSubDesc').val() != "") {
                 var isChecked;
@@ -883,7 +883,7 @@
                 }
             });
 
-            debugger
+            
             if (indexAllowed == fFinanciamientoId) {
                 ExisteRestriccion = false;
             }
