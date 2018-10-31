@@ -1,0 +1,18 @@
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //var dicGrpsLst = new List<SAS_GRUPO_FILTRO_DTO>();
+            //dicGrpsLst.Add(new SAS_GRUPO_FILTRO_DTO() { ID_GRUPO = 1, NOMBRE_GRUPO = "Grupo 1" });
+            //dicGrpsLst.Add(new SAS_GRUPO_FILTRO_DTO() { ID_GRUPO = 2, NOMBRE_GRUPO = "Grupo 2" });
+            //ViewBag.Grupos = dicGrpsLst.Select(x => new SelectListItem { Value = x.ID_GRUPO.ToString(), Text = x.NOMBRE_GRUPO });
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////
+            //ViewBag.Result = ExecuteQuery.result;
+            //ExecuteQuery.result = "";
+
+
+
+
+ ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //List<FUENTES_FINANCIAMIENTO_DTO> fsFinanciamiento = new List<FUENTES_FINANCIAMIENTO_DTO>();
+            //fsFinanciamiento.Add(new FUENTES_FINANCIAMIENTO_DTO() { FUENTE = 12, VIGENTE = "S", DESC_FUENTE = "Mixto" });
+            //fsFinanciamiento.Add(new FUENTES_FINANCIAMIENTO_DTO() { FUENTE = 32, VIGENTE = "N", DESC_FUENTE = "Mixto2" });
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////

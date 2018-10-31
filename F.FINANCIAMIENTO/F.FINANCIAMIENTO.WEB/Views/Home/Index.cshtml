@@ -190,6 +190,13 @@
             });
         }
 
+        function LobiboxErrorAlert(type, message) {
+            Lobibox.alert(type, {
+                msg: message,
+                title: 'Error',
+            });
+        }
+
         var defaultFfData = [];
         var fDataArray = [];
         var data = [];
@@ -216,8 +223,7 @@
                     data: form.serialize(),
                     type: 'POST',
                     success: function (data) {
-                        clear();
-                        LobiboxAlert('success', 'Exito', data);
+                        clear(data);
                     },
                     error: function (xhr) {
                         LobiboxAlert('warning', 'Precaución', 'Error al intentar guardar los datos.');
@@ -227,14 +233,29 @@
             }
         };
 
-        function clear() {
-            data = [];
-            imprimir();
+        function clear(msg) {
+            debugger
+            if (msg.includes("Code:")) {
+                LobiboxErrorAlert('error', msg);
+            }
+            else {
+                LobiboxAlert('success', 'Exito', msg);
+                data = [];
+                imprimir();
+            }
         }
 
-        function clearFF() {
-            fDataArray = [];
-            imprimirFF(fDataArray);
+        function clearFF(msg) {
+            debugger
+            if (msg.includes("Code:"))
+            {
+                LobiboxErrorAlert('error', msg);
+            }
+            else {
+                LobiboxAlert('success', 'Exito', msg);
+                fDataArray = [];
+                imprimirFF(fDataArray);
+            }
         }
 
         function Update() {
@@ -254,9 +275,7 @@
                     data: form.serialize(),
                     type: 'POST',
                     success: function (data) {
-                        clearFF();
-                        LobiboxAlert('success', 'Exito', data);
-
+                        clearFF(data);
                     },
                     error: function (xhr) {
                         LobiboxAlert('warning', 'Precaución', 'Error al intentar actualizar los datos.');
